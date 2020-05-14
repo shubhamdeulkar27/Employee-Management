@@ -28,5 +28,25 @@ namespace EmployeeManagementTests
             Assert.Equal(expectedUserName,user.UserName);
             Assert.Equal(expectedPassword, user.Password);
         }
+
+        /// <summary>
+        /// Test Case 1.1 Given Empty UserName Should throw Validation Exception.
+        /// </summary>
+        [Fact]
+        public void GivenEmptyUserNameShouldThrowValidationException()
+        {
+            //Expected Value.
+            string expected = "UserName Is Required";
+            try
+            {
+                //Creating User Instance.
+                User user = new User();
+            }
+            catch (Exception exception)
+            {
+                //Asserting Values.
+                Assert.Equal(expected,exception.Message);
+            }
+        }
     }
 }
