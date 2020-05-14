@@ -48,5 +48,27 @@ namespace EmployeeManagementTests
                 Assert.Equal(expected,exception.Message);
             }
         }
+
+        /// <summary>
+        /// Test Case 1.2 Given MinimumLength Password Should throw Validation Exception.
+        /// </summary>
+        [Fact]
+        public void GivenEmptyPasswordShouldThrowValidationException()
+        {
+            //Expected Value.
+            string expected = "Password Is Required";
+            try
+            {
+                //Creating User Instance.
+                User user = new User();
+                user.UserName = "Chris";
+            }
+            catch (Exception exception)
+            {
+                //Asserting Values.
+                Assert.Equal(expected, exception.Message);
+            }
+        }
+
     }
 }
