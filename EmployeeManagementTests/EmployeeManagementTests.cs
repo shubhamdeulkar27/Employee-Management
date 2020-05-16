@@ -1,4 +1,5 @@
 using CommonLayer;
+using RepositoryLayer.Services;
 using System;
 using Xunit;
 
@@ -7,7 +8,7 @@ namespace EmployeeManagementTests
     /// <summary>
     /// Class For Test Cases For Comman Layer.
     /// </summary>
-    public class CommonLayerTests
+    public class EmployeeManagementTests
     {
         /// <summary>
         /// Test Case 1.0 Given UserName, Password and UserName,Password Should Return Equal.
@@ -17,12 +18,12 @@ namespace EmployeeManagementTests
         {
             //Creating User Instances.
             User user = new User();
-            user.UserName = "Chris";
-            user.Password = "Thor";
+            user.UserName = "Chrisy";
+            user.Password = "1234567";
 
             //Expected Values.
-            string expectedUserName = "Chris";
-            string expectedPassword = "Thor";
+            string expectedUserName = "Chrisy";
+            string expectedPassword = "1234567";
 
             //Asserting Values.
             Assert.Equal(expectedUserName,user.UserName);
@@ -61,7 +62,7 @@ namespace EmployeeManagementTests
             {
                 //Creating User Instance.
                 User user = new User();
-                user.UserName = "Chris";
+                user.UserName = "Chrisy";
             }
             catch (Exception exception)
             {
@@ -70,5 +71,15 @@ namespace EmployeeManagementTests
             }
         }
 
+        /// <summary>
+        /// Test Case 1.3 For Checking Encryption Function. 
+        /// </summary>
+        [Fact]
+        public void TestForChrckingEncryptingFunction()
+        {
+            string encryptedSting1 = UserRL.EncodePasswordToBase64("Visual");
+            string encryptedSting2 = UserRL.EncodePasswordToBase64("Visual");
+            Assert.Equal(encryptedSting1,encryptedSting2);
+        }
     }
 }
