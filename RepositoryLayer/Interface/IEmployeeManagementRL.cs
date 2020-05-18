@@ -9,13 +9,20 @@ namespace RepositoryLayer.Interface
     /// <summary>
     /// Interface For IUserRL Impelementation.
     /// </summary>
-    public interface IUserRL
+    public interface IEmployeeManagementRL
     {
         /// <summary>
         /// Abstract bool Function For User Registration Implementation.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        bool RegisterUser(User data);
+        Message RegisterUser(User data);
+
+        /// <summary>
+        /// Abstract Function For Login User.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        Message LoginUser(User data);
     }
 }

@@ -11,7 +11,10 @@ using Microsoft.Extensions.Configuration;
 
 namespace RepositoryLayer.Services
 {
-    public class UserRL : IUserRL
+    /// <summary>
+    /// Class EmployeeManagementRL To Interact With Database. 
+    /// </summary>
+    public class EmployeeManagementRL : IEmployeeManagementRL
     {
         //References.
         private IConfiguration configuration;
@@ -22,7 +25,7 @@ namespace RepositoryLayer.Services
         /// Parameter Constrcutor For Setting Configuration Object.
         /// </summary>
         /// <param name="configuration"></param>
-        public UserRL(IConfiguration configuration)
+        public EmployeeManagementRL(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
@@ -48,7 +51,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool RegisterUser(User user)
+        public Message RegisterUser(User user)
         {
             try
             {
@@ -67,18 +70,26 @@ namespace RepositoryLayer.Services
                 //Oppening The Conection.
                 connection.Open();
 
-                //Executing Store Procedure.
+                //Executing Stored Procedure.
                 int i = command.ExecuteNonQuery();
 
                 //Clossing Connection.
                 connection.Close();
                 if (i >= 1)
                 {
-                    return true;
+                    Message message = new Message();
+                    message.Status = "True";
+                    message.ResponseMessage = "User Resgisterd";
+                    message.Data = user.UserName;
+                    return message;
                 }
                 else
                 {
-                    return false;
+                    Message message = new Message();
+                    message.Status = "False";
+                    message.ResponseMessage = "User Not Resgisterd";
+                    message.Data = user.UserName;
+                    return message;
                 }
             }
             catch (Exception exception)
@@ -107,5 +118,64 @@ namespace RepositoryLayer.Services
             }
         }
 
+        /// <summary>
+        /// Function To Login User.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public Message LoginUser(User user)
+        {
+            try
+            {
+                //Encrypting Password.
+                string encryptedPassword = EncodePasswordToBase64(user.Password);
+                
+                //Establishing Connection.
+                Connection();
+
+                //Creating Sql Comman For Stored Procedure.
+                SqlCommand command = new SqlCommand("spLoginUser", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@UserName", user.UserName);
+                command.Parameters.AddWithValue("@Password", encryptedPassword);
+                
+                //Oppening The Conection.
+                connection.Open();
+
+                //Executing Store Procedure.
+                SqlDataReader reader = command.ExecuteReader();
+                
+                int status=0;
+                
+                //While Loop For Reading status result from SqlDataReader.
+                while (reader.Read())
+                {
+                    status = reader.GetInt32(0);
+                }
+
+                //Clossing Connection.
+                connection.Close();
+                if (status >= 1)
+                {
+                    Message message = new Message();
+                    message.Status = "True";
+                    message.ResponseMessage = "Login Successfull";
+                    message.Data = user.UserName;
+                    return message;
+                }
+                else
+                {
+                    Message message = new Message();
+                    message.Status = "False";
+                    message.ResponseMessage = "Login Attempt Failed";
+                    message.Data = user.UserName;
+                    return message; 
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

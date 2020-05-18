@@ -16,11 +16,16 @@ namespace EmployeeManagement.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private IUserBL userBL;
-
-        public EmployeeController(IUserBL userBL)
+        //Bussiness Layer Refernces.
+        private IEmployeeManagementBL employeeManagementBL;
+        
+        /// <summary>
+        /// Parameter Constructor For Setting EmployeeManagementBL Object.
+        /// </summary>
+        /// <param name="employeeManagementBL"></param>
+        public EmployeeController(IEmployeeManagementBL employeeManagementBL)
         {
-            this.userBL = userBL;
+            this.employeeManagementBL = employeeManagementBL;
         }
 
         /// <summary>
@@ -29,10 +34,22 @@ namespace EmployeeManagement.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         // POST api/employee
-        [HttpPost]
+        [HttpPost("registeruser")]
         public IActionResult RegisterUser(User data)
         {
-            bool response = userBL.RegisterUser(data);
+            Message response = employeeManagementBL.RegisterUser(data);
+            return Ok(new { response });
+        }
+        
+        /// <summary>
+        /// Function For User Login.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [HttpPost("login")]
+        public IActionResult LoginUser(User data)
+        {
+            Message response = employeeManagementBL.LoginUser(data);
             return Ok(new { response });
         }
 

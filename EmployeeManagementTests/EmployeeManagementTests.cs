@@ -1,4 +1,7 @@
+using BusinessLayer.Interface;
+using BusinessLayer.Services;
 using CommonLayer;
+using EmployeeManagement.Controllers;
 using RepositoryLayer.Services;
 using System;
 using Xunit;
@@ -77,8 +80,11 @@ namespace EmployeeManagementTests
         [Fact]
         public void TestForChrckingEncryptingFunction()
         {
-            string encryptedSting1 = UserRL.EncodePasswordToBase64("Visual");
-            string encryptedSting2 = UserRL.EncodePasswordToBase64("Visual");
+            //Encrypting Strings.
+            string encryptedSting1 = EmployeeManagementRL.EncodePasswordToBase64("Visual");
+            string encryptedSting2 = EmployeeManagementRL.EncodePasswordToBase64("Visual");
+           
+            //Asserting Values.
             Assert.Equal(encryptedSting1,encryptedSting2);
         }
     }

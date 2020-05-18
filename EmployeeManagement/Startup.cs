@@ -31,8 +31,8 @@ namespace EmployeeManagement
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddTransient<IUserRL, UserRL>();
-            services.AddTransient<IUserBL, UserBL>();
+            services.AddTransient<IEmployeeManagementRL, EmployeeManagementRL>();
+            services.AddTransient<IEmployeeManagementBL, EmployeeManagementBL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

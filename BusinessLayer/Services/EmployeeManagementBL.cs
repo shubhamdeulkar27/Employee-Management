@@ -10,18 +10,18 @@ namespace BusinessLayer.Services
     /// <summary>
     /// Business Logic Layer Class Fr User.
     /// </summary>
-    public class UserBL : IUserBL
+    public class EmployeeManagementBL : IEmployeeManagementBL
     {
         // Reference.
-        private IUserRL information;
+        private IEmployeeManagementRL userRL;
         
         /// <summary>
         /// Parameter Constructor For Setting IUser Reference.
         /// </summary>
         /// <param name="information"></param>
-        public UserBL(IUserRL information)
+        public EmployeeManagementBL(IEmployeeManagementRL userRL)
         {
-            this.information = information;
+            this.userRL = userRL;
         }
 
         /// <summary>
@@ -29,11 +29,23 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool RegisterUser(User user)
+        public Message RegisterUser(User user)
         {
             try
             {
-                return this.information.RegisterUser(user);
+                return this.userRL.RegisterUser(user);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        public Message LoginUser(User user)
+        {
+            try
+            {
+                return this.userRL.LoginUser(user);
             }
             catch (Exception exception)
             {
