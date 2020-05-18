@@ -53,5 +53,16 @@ namespace EmployeeManagement.Controllers
             return Ok(new { response });
         }
 
+        /// <summary>
+        /// Function To Register Employee.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        [HttpPost("registeremployee")]
+        public IActionResult RegisterEmployee(Employee employee)
+        {
+            Message response = employeeManagementBL.RegisterEmployee(employee);
+            return Ok(new { response });
+        }
     }
 }

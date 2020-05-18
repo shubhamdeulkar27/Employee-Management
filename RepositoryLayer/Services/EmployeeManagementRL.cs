@@ -75,6 +75,7 @@ namespace RepositoryLayer.Services
 
                 //Clossing Connection.
                 connection.Close();
+                
                 if (i >= 1)
                 {
                     Message message = new Message();
@@ -155,6 +156,7 @@ namespace RepositoryLayer.Services
 
                 //Clossing Connection.
                 connection.Close();
+
                 if (status >= 1)
                 {
                     Message message = new Message();
@@ -176,6 +178,62 @@ namespace RepositoryLayer.Services
             {
                 throw new Exception(exception.Message);
             }
+        }
+
+        /// <summary>
+        /// Function To Register Employee.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Message RegisterEmployee(Employee employee)
+        {
+            try
+            {
+                //establishing Connection.
+                Connection();
+
+                //Creating Sql Comman For Stored Procedure.
+                SqlCommand command = new SqlCommand("spAddEmployee", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@FirstName", employee.FirstName);
+                command.Parameters.AddWithValue("@LastName", employee.LastName);
+                command.Parameters.AddWithValue("@EmailId", employee.EmailId);
+                command.Parameters.AddWithValue("@Mobile", employee.Mobile);
+                command.Parameters.AddWithValue("@Address", employee.Address);
+                command.Parameters.AddWithValue("@DOB", employee.DOB);
+                command.Parameters.AddWithValue("@Employment", employee.Employment);
+
+                //Oppening Connetion.
+                connection.Open();
+
+                //Executing Command.
+                int i = command.ExecuteNonQuery();
+
+                //closing Connection.
+                connection.Close();
+
+                if (i >= 1)
+                {
+                    Message message = new Message();
+                    message.Status = "True";
+                    message.ResponseMessage = "Emplyee Registered Successfully";
+                    message.Data = employee.ToString();
+                    return message;
+                }
+                else
+                {
+                    Message message = new Message();
+                    message.Status = "False";
+                    message.ResponseMessage = "Emplyee Registered Failed";
+                    message.Data = employee.ToString();
+                    return message;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+
         }
     }
 }

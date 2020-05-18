@@ -23,5 +23,12 @@ namespace BusinessLayer.Interface
         /// <param name="data"></param>
         /// <returns></returns>
         Message LoginUser(User data);
+
+        /// <summary>
+        /// Abstract Function to Register Employee Implementation.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        Message RegisterEmployee(Employee data);
     }
 }

@@ -41,11 +41,33 @@ namespace BusinessLayer.Services
             }
         }
 
+        /// <summary>
+        /// Function For Login User.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public Message LoginUser(User user)
         {
             try
             {
                 return this.userRL.LoginUser(user);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Function To Register Employee.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Message RegisterEmployee(Employee employee)
+        {
+            try
+            {
+                return this.userRL.RegisterEmployee(employee);
             }
             catch (Exception exception)
             {
