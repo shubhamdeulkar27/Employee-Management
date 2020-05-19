@@ -18,7 +18,7 @@ namespace EmployeeManagement.Controllers
     {
         //Bussiness Layer Refernces.
         private IEmployeeManagementBL employeeManagementBL;
-        
+
         /// <summary>
         /// Parameter Constructor For Setting EmployeeManagementBL Object.
         /// </summary>
@@ -35,19 +35,19 @@ namespace EmployeeManagement.Controllers
         /// <returns></returns>
         // POST api/employee
         [HttpPost("registeruser")]
-        public IActionResult RegisterUser(User data)
+        public IActionResult RegisterUser([FromBody]User data)
         {
             Message response = employeeManagementBL.RegisterUser(data);
             return Ok(new { response });
         }
-        
+
         /// <summary>
         /// Function For User Login.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        public IActionResult LoginUser(User data)
+        public IActionResult LoginUser([FromBody]User data)
         {
             Message response = employeeManagementBL.LoginUser(data);
             return Ok(new { response });
@@ -59,7 +59,7 @@ namespace EmployeeManagement.Controllers
         /// <param name="employee"></param>
         /// <returns></returns>
         [HttpPost("registeremployee")]
-        public IActionResult RegisterEmployee(Employee employee)
+        public IActionResult RegisterEmployee([FromBody]Employee employee)
         {
             Message response = employeeManagementBL.RegisterEmployee(employee);
             return Ok(new { response });
@@ -82,10 +82,23 @@ namespace EmployeeManagement.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet("getemployee/{id}")]
-        public IActionResult GetEmployee(int Id)
+        public IActionResult GetEmployee([FromRoute]int Id)
         {
             Employee employee = employeeManagementBL.GetEmployee(Id);
             return Ok(new { employee });
+        }
+
+        /// <summary>
+        /// Function To Update Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        [HttpPut("updateemployee/{Id}")]
+        public IActionResult UpdateEmployee([FromRoute]int Id , [FromBody]Employee employee)
+        {
+            Message response = employeeManagementBL.UpdateEmployee(Id,employee);
+            return Ok(new { response });
         }
     }
 }

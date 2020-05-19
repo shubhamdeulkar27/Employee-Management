@@ -107,5 +107,22 @@ namespace BusinessLayer.Services
                 throw new Exception(exception.Message);
             }
         }
+
+        /// <summary>
+        /// Function To Update Employee Details.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Message UpdateEmployee(int Id,Employee employee)
+        {
+            try
+            {
+                return this.employeeManagementRL.UpdateEmployee(Id,employee);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

@@ -64,6 +64,8 @@ namespace RepositoryLayer.Services
                 //Creating Sql Comman For Stored Procedure.
                 SqlCommand command = new SqlCommand("spRegisterUser", connection);
                 command.CommandType = CommandType.StoredProcedure;
+                
+                //Setting Parameters.
                 command.Parameters.AddWithValue("@UserName", user.UserName);
                 command.Parameters.AddWithValue("@Password", encryptedPassword);
 
@@ -137,6 +139,8 @@ namespace RepositoryLayer.Services
                 //Creating Sql Comman For Stored Procedure.
                 SqlCommand command = new SqlCommand("spLoginUser", connection);
                 command.CommandType = CommandType.StoredProcedure;
+                
+                //Setting Parameters.
                 command.Parameters.AddWithValue("@UserName", user.UserName);
                 command.Parameters.AddWithValue("@Password", encryptedPassword);
                 
@@ -195,6 +199,8 @@ namespace RepositoryLayer.Services
                 //Creating Sql Command For Stored Procedure.
                 SqlCommand command = new SqlCommand("spAddEmployee", connection);
                 command.CommandType = CommandType.StoredProcedure;
+                
+                //Setting Parameters.
                 command.Parameters.AddWithValue("@FirstName", employee.FirstName);
                 command.Parameters.AddWithValue("@LastName", employee.LastName);
                 command.Parameters.AddWithValue("@EmailId", employee.EmailId);
@@ -314,7 +320,6 @@ namespace RepositoryLayer.Services
                 //While Loop For Reading Data From SqlDataReader To Employee Object.
                 while (reader.Read())
                 {
-                    
                     //reading Data From SqlDataReader
                     employeeData.Id = (int)reader["Id"];
                     employeeData.FirstName = reader["FirstName"].ToString();
@@ -324,12 +329,70 @@ namespace RepositoryLayer.Services
                     employeeData.Address = reader["Address"].ToString();
                     employeeData.DOB = reader["DOB"].ToString();
                     employeeData.Employment = reader["Employment"].ToString();
-
                 }
 
                 //Closing Connection.
                 connection.Close();
                 return employeeData;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Function To Update Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public Message UpdateEmployee(int Id, Employee employee)
+        {
+            try
+            {
+                //Establishing Connection.
+                Connection();
+
+                //Creating Sqlcommand For Stored Procedure.
+                SqlCommand command = new SqlCommand("spUpdateEmployee", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                
+                //Setting Parameters.
+                command.Parameters.AddWithValue("@Id",Id);
+                command.Parameters.AddWithValue("@FirstName", employee.FirstName);
+                command.Parameters.AddWithValue("@LastName", employee.LastName);
+                command.Parameters.AddWithValue("@EmailId", employee.EmailId);
+                command.Parameters.AddWithValue("@Mobile", employee.Mobile);
+                command.Parameters.AddWithValue("@Address", employee.Address);
+                command.Parameters.AddWithValue("@DOB", employee.DOB);
+                command.Parameters.AddWithValue("@Employment", employee.Employment);
+
+                //Oppening Connetion.
+                connection.Open();
+
+                //Executing Command.
+                int i = command.ExecuteNonQuery();
+
+                //closing Connection.
+                connection.Close();
+
+                if (i >= 1)
+                {
+                    Message message = new Message();
+                    message.Status = "True";
+                    message.ResponseMessage = "Emplyee Details Updated Successfully";
+                    message.Data = employee.ToString();
+                    return message;
+                }
+                else
+                {
+                    Message message = new Message();
+                    message.Status = "False";
+                    message.ResponseMessage = "Update Attempt Failed";
+                    message.Data = employee.ToString();
+                    return message;
+                }
             }
             catch (Exception exception)
             {

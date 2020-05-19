@@ -44,5 +44,12 @@ namespace RepositoryLayer.Interface
         /// </summary>
         /// <returns></returns>
         Employee GetEmployee(int Id);
+
+        /// <summary>
+        /// Abstract Functon For Implementation Of Update Employee Function.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        Message UpdateEmployee(int Id, Employee data); 
     }
 }
