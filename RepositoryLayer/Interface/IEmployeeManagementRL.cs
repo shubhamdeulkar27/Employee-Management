@@ -38,5 +38,11 @@ namespace RepositoryLayer.Interface
         /// <param name="data"></param>
         /// <returns></returns>
         List<Employee> GetEmployees();
+
+        /// <summary>
+        /// Abstract Function For Implementation Of Get Specific Employee Details Function.
+        /// </summary>
+        /// <returns></returns>
+        Employee GetEmployee(int Id);
     }
 }

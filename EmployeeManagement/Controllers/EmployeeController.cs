@@ -75,5 +75,17 @@ namespace EmployeeManagement.Controllers
             List<Employee> employees = employeeManagementBL.GetEmployees();
             return Ok(new { employees });
         }
+
+        /// <summary>
+        /// Function To Get Specified Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet("getemployee/{id}")]
+        public IActionResult GetEmployee(int Id)
+        {
+            Employee employee = employeeManagementBL.GetEmployee(Id);
+            return Ok(new { employee });
+        }
     }
 }

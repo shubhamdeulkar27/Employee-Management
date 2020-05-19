@@ -284,5 +284,57 @@ namespace RepositoryLayer.Services
                 throw new Exception(exception.Message);
             }
         }
+
+        /// <summary>
+        /// Function For Getting Specified Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Employee GetEmployee(int Id)
+        {
+            try
+            {
+                //Establishing Connection.
+                Connection();
+                
+                //Creating SqlCommand For Stored Procedure.
+                SqlCommand command = new SqlCommand("spGetEmployee", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@Id",Id);
+
+                //Oppening Conection.
+                connection.Open();
+
+                //Executing Stored Procedure.
+                SqlDataReader reader = command.ExecuteReader();
+
+                //Employee Instance For Setting Data.
+                Employee employeeData = new Employee();
+
+                //While Loop For Reading Data From SqlDataReader To Employee Object.
+                while (reader.Read())
+                {
+                    
+                    //reading Data From SqlDataReader
+                    employeeData.Id = (int)reader["Id"];
+                    employeeData.FirstName = reader["FirstName"].ToString();
+                    employeeData.LastName = reader["LastName"].ToString();
+                    employeeData.EmailId = reader["EmailId"].ToString();
+                    employeeData.Mobile = (long)reader["Mobile"];
+                    employeeData.Address = reader["Address"].ToString();
+                    employeeData.DOB = reader["DOB"].ToString();
+                    employeeData.Employment = reader["Employment"].ToString();
+
+                }
+
+                //Closing Connection.
+                connection.Close();
+                return employeeData;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

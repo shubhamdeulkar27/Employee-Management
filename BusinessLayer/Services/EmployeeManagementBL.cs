@@ -78,13 +78,29 @@ namespace BusinessLayer.Services
         /// <summary>
         /// Function to Get Employees.
         /// </summary>
-        /// <param name="employee"></param>
         /// <returns></returns>
         public List<Employee> GetEmployees()
         {
             try
             {
                 return this.employeeManagementRL.GetEmployees();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Function for Getting Specified Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Employee GetEmployee(int Id)
+        {
+            try
+            {
+                return this.employeeManagementRL.GetEmployee(Id);
             }
             catch (Exception exception)
             {
