@@ -13,7 +13,7 @@ namespace BusinessLayer.Services
     public class EmployeeManagementBL : IEmployeeManagementBL
     {
         // Reference.
-        private IEmployeeManagementRL userRL;
+        private IEmployeeManagementRL employeeManagementRL;
         
         /// <summary>
         /// Parameter Constructor For Setting IUser Reference.
@@ -21,7 +21,7 @@ namespace BusinessLayer.Services
         /// <param name="information"></param>
         public EmployeeManagementBL(IEmployeeManagementRL userRL)
         {
-            this.userRL = userRL;
+            this.employeeManagementRL = userRL;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                return this.userRL.RegisterUser(user);
+                return this.employeeManagementRL.RegisterUser(user);
             }
             catch (Exception exception)
             {
@@ -50,7 +50,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                return this.userRL.LoginUser(user);
+                return this.employeeManagementRL.LoginUser(user);
             }
             catch (Exception exception)
             {
@@ -67,7 +67,24 @@ namespace BusinessLayer.Services
         {
             try
             {
-                return this.userRL.RegisterEmployee(employee);
+                return this.employeeManagementRL.RegisterEmployee(employee);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// Function to Get Employees.
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        public List<Employee> GetEmployees()
+        {
+            try
+            {
+                return this.employeeManagementRL.GetEmployees();
             }
             catch (Exception exception)
             {

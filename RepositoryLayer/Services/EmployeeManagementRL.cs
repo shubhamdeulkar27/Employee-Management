@@ -189,10 +189,10 @@ namespace RepositoryLayer.Services
         {
             try
             {
-                //establishing Connection.
+                //Establishing Connection.
                 Connection();
 
-                //Creating Sql Comman For Stored Procedure.
+                //Creating Sql Command For Stored Procedure.
                 SqlCommand command = new SqlCommand("spAddEmployee", connection);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@FirstName", employee.FirstName);
@@ -233,7 +233,56 @@ namespace RepositoryLayer.Services
             {
                 throw new Exception(exception.Message);
             }
+        }
 
+        /// <summary>
+        /// Function To Get All Employees.
+        /// </summary>
+        /// <returns></returns>
+        public List<Employee> GetEmployees()
+        {
+            try
+            {
+                //List For Storing Employee Details.
+                List<Employee> employeeList = new List<Employee>();
+
+                //Establishing Connection.
+                Connection();
+
+                //Creating Sql Command For Stored Procedure.
+                SqlCommand command = new SqlCommand("spGetEmployees", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                //Opening Connectiion.
+                connection.Open();
+
+                //Executing Stored Procedure.
+                SqlDataReader reader = command.ExecuteReader();
+
+                //While Loop For Reading Data From SqlDataReader To Employee Object.
+                while (reader.Read())
+                {
+                    Employee employeeData = new Employee();
+                    employeeData.Id = (int)reader["Id"];
+                    employeeData.FirstName = reader["FirstName"].ToString();
+                    employeeData.LastName = reader["LastName"].ToString();
+                    employeeData.EmailId = reader["EmailId"].ToString();
+                    employeeData.Mobile = (long)reader["Mobile"];
+                    employeeData.Address = reader["Address"].ToString();
+                    employeeData.DOB = reader["DOB"].ToString();
+                    employeeData.Employment = reader["Employment"].ToString();
+                    employeeList.Add(employeeData);
+                }
+
+                //Closing Connection.
+                connection.Close();
+
+                return employeeList;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
         }
     }
 }

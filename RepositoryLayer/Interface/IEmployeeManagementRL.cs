@@ -31,5 +31,12 @@ namespace RepositoryLayer.Interface
         /// <param name="data"></param>
         /// <returns></returns>
         Message RegisterEmployee(Employee data);
+
+        /// <summary>
+        /// Abstract Function For Implementation Of GetEmployees.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        List<Employee> GetEmployees();
     }
 }

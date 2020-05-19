@@ -64,5 +64,16 @@ namespace EmployeeManagement.Controllers
             Message response = employeeManagementBL.RegisterEmployee(employee);
             return Ok(new { response });
         }
+
+        /// <summary>
+        /// Function To Get All Employees.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getemployees")]
+        public IActionResult GetEmployees()
+        {
+            List<Employee> employees = employeeManagementBL.GetEmployees();
+            return Ok(new { employees });
+        }
     }
 }
