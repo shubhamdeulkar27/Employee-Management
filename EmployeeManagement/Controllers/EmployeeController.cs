@@ -95,9 +95,21 @@ namespace EmployeeManagement.Controllers
         /// <param name="employee"></param>
         /// <returns></returns>
         [HttpPut("updateemployee/{Id}")]
-        public IActionResult UpdateEmployee([FromRoute]int Id , [FromBody]Employee employee)
+        public IActionResult UpdateEmployee([FromRoute]int Id, [FromBody]Employee employee)
         {
-            Message response = employeeManagementBL.UpdateEmployee(Id,employee);
+            Message response = employeeManagementBL.UpdateEmployee(Id, employee);
+            return Ok(new { response });
+        }
+
+        /// <summary>
+        /// Function To Delete Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete("deleteemployee/{Id}")]
+        public IActionResult DeleteEmployee([FromRoute]int Id)
+        {
+            Message response = employeeManagementBL.DeleteEmployee(Id);
             return Ok(new { response });
         }
     }

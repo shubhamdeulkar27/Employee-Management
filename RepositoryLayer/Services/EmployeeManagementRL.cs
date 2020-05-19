@@ -399,5 +399,56 @@ namespace RepositoryLayer.Services
                 throw new Exception(exception.Message);
             }
         }
+
+        /// <summary>
+        /// Function To Delete Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Message DeleteEmployee(int Id)
+        {
+            try
+            {
+                //Establishing Connection.
+                Connection();
+
+                //Creating SqlCommand For Stored Procedure.
+                SqlCommand command = new SqlCommand("spDeleteEmployee", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                //Setting Parameters.
+                command.Parameters.AddWithValue("@Id", Id);
+
+                //Oppening Connection
+                connection.Open();
+
+                //Executing Command.
+                int i = command.ExecuteNonQuery();
+
+                //Closing Connection.
+                connection.Close();
+
+                if (i >= 1)
+                {
+                    Message message = new Message();
+                    message.Status = "True";
+                    message.ResponseMessage = "Employee Details Deleted";
+                    message.Data = Id.ToString();
+                    return message;
+                }
+                else
+                {
+                    Message message = new Message();
+                    message.Status = "False";
+                    message.ResponseMessage = "Employee Details Deletion Failed";
+                    message.Data = Id.ToString();
+                    return message;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

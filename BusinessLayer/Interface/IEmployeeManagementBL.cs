@@ -50,5 +50,12 @@ namespace BusinessLayer.Interface
         /// <param name="data"></param>
         /// <returns></returns>
         Message UpdateEmployee(int Id,Employee data);
+
+        /// <summary>
+        /// Abstract Function For Implementation Of Delete Employee Details Function.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        Message DeleteEmployee(int Id);
     }
 }

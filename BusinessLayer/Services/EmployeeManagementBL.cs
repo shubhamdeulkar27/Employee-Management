@@ -124,5 +124,22 @@ namespace BusinessLayer.Services
                 throw new Exception(exception.Message);
             }
         }
+
+        /// <summary>
+        /// Function To Delete Employee Details.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Message DeleteEmployee(int Id)
+        {
+            try
+            {
+                return this.employeeManagementRL.DeleteEmployee(Id);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }
