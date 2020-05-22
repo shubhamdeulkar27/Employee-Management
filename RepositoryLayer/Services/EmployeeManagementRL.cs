@@ -51,7 +51,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Message RegisterUser(User user)
+        public ResponseMessage<User> RegisterUser(User user)
         {
             try
             {
@@ -77,23 +77,22 @@ namespace RepositoryLayer.Services
 
                 //Clossing Connection.
                 connection.Close();
-                
+
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<User> message = new ResponseMessage<User>();
                 if (i >= 1)
                 {
-                    Message message = new Message();
                     message.Status = "True";
-                    message.ResponseMessage = "User Resgisterd";
-                    message.Data = user.UserName;
-                    return message;
+                    message.Message = "User Resgisterd";
+                    message.Data = user;
                 }
                 else
                 {
-                    Message message = new Message();
                     message.Status = "False";
-                    message.ResponseMessage = "User Not Resgisterd";
-                    message.Data = user.UserName;
-                    return message;
+                    message.Message = "User Not Resgisterd";
+                    message.Data = user;
                 }
+                return message;
             }
             catch (Exception exception)
             {
@@ -126,7 +125,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Message LoginUser(User user)
+        public ResponseMessage<User> LoginUser(User user)
         {
             try
             {
@@ -161,22 +160,21 @@ namespace RepositoryLayer.Services
                 //Clossing Connection.
                 connection.Close();
 
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<User> message = new ResponseMessage<User>();
                 if (status >= 1)
                 {
-                    Message message = new Message();
                     message.Status = "True";
-                    message.ResponseMessage = "Login Successfull";
-                    message.Data = user.UserName;
-                    return message;
+                    message.Message = "Login Successfull";
+                    message.Data = user;
                 }
                 else
                 {
-                    Message message = new Message();
                     message.Status = "False";
-                    message.ResponseMessage = "Login Attempt Failed";
-                    message.Data = user.UserName;
-                    return message; 
+                    message.Message = "Login Attempt Failed";
+                    message.Data = user;
                 }
+                return message;
             }
             catch (Exception exception)
             {
@@ -189,7 +187,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public Message RegisterEmployee(Employee employee)
+        public ResponseMessage<Employee> RegisterEmployee(Employee employee)
         {
             try
             {
@@ -206,7 +204,7 @@ namespace RepositoryLayer.Services
                 command.Parameters.AddWithValue("@EmailId", employee.EmailId);
                 command.Parameters.AddWithValue("@Mobile", employee.Mobile);
                 command.Parameters.AddWithValue("@Address", employee.Address);
-                command.Parameters.AddWithValue("@DOB", employee.DOB);
+                command.Parameters.AddWithValue("@BirthDate", employee.BirthDate);
                 command.Parameters.AddWithValue("@Employment", employee.Employment);
 
                 //Oppening Connetion.
@@ -218,22 +216,21 @@ namespace RepositoryLayer.Services
                 //closing Connection.
                 connection.Close();
 
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
                 if (i >= 1)
                 {
-                    Message message = new Message();
                     message.Status = "True";
-                    message.ResponseMessage = "Emplyee Registered Successfully";
-                    message.Data = employee.ToString();
-                    return message;
+                    message.Message = "Emplyee Registered Successfully";
+                    message.Data = employee;
                 }
                 else
                 {
-                    Message message = new Message();
                     message.Status = "False";
-                    message.ResponseMessage = "Emplyee Registered Failed";
-                    message.Data = employee.ToString();
-                    return message;
+                    message.Message = "Emplyee Registered Failed";
+                    message.Data = employee;
                 }
+                return message;
             }
             catch (Exception exception)
             {
@@ -245,7 +242,7 @@ namespace RepositoryLayer.Services
         /// Function To Get All Employees.
         /// </summary>
         /// <returns></returns>
-        public List<Employee> GetEmployees()
+        public ResponseMessage<List<Employee>> GetEmployees()
         {
             try
             {
@@ -273,9 +270,9 @@ namespace RepositoryLayer.Services
                     employeeData.FirstName = reader["FirstName"].ToString();
                     employeeData.LastName = reader["LastName"].ToString();
                     employeeData.EmailId = reader["EmailId"].ToString();
-                    employeeData.Mobile = (long)reader["Mobile"];
+                    employeeData.Mobile = reader["Mobile"].ToString();
                     employeeData.Address = reader["Address"].ToString();
-                    employeeData.DOB = reader["DOB"].ToString();
+                    employeeData.BirthDate = reader["BirthDate"].ToString();
                     employeeData.Employment = reader["Employment"].ToString();
                     employeeList.Add(employeeData);
                 }
@@ -283,7 +280,21 @@ namespace RepositoryLayer.Services
                 //Closing Connection.
                 connection.Close();
 
-                return employeeList;
+                //Creating Instance Of ResponsMessage For Sending Response.
+                ResponseMessage<List<Employee>> message = new ResponseMessage<List<Employee>>();
+                if (employeeList.Count != 0)
+                {
+                    message.Status = "True";
+                    message.Message = "Employee List Fetched Successfully";
+                    message.Data = employeeList;
+                }
+                else
+                {
+                    message.Status = "False";
+                    message.Message = "Employee List Fetching Attempt Failed";
+                    message.Data = employeeList;
+                }
+                return message;
             }
             catch (Exception exception)
             {
@@ -296,7 +307,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public Employee GetEmployee(int Id)
+        public ResponseMessage<Employee> GetEmployee(int Id)
         {
             try
             {
@@ -325,15 +336,30 @@ namespace RepositoryLayer.Services
                     employeeData.FirstName = reader["FirstName"].ToString();
                     employeeData.LastName = reader["LastName"].ToString();
                     employeeData.EmailId = reader["EmailId"].ToString();
-                    employeeData.Mobile = (long)reader["Mobile"];
+                    employeeData.Mobile = reader["Mobile"].ToString();
                     employeeData.Address = reader["Address"].ToString();
-                    employeeData.DOB = reader["DOB"].ToString();
+                    employeeData.BirthDate = reader["BirthDate"].ToString();
                     employeeData.Employment = reader["Employment"].ToString();
                 }
 
                 //Closing Connection.
                 connection.Close();
-                return employeeData;
+
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
+                if (employeeData != null)
+                {
+                    message.Status = "True";
+                    message.Message = "Employee Details Fetched Successfully";
+                    message.Data = employeeData;
+                }
+                else
+                {
+                    message.Status = "True";
+                    message.Message = "Employee Details Fetched Successfully";
+                    message.Data = employeeData;
+                }
+                return message;
             }
             catch (Exception exception)
             {
@@ -347,7 +373,7 @@ namespace RepositoryLayer.Services
         /// <param name="Id"></param>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public Message UpdateEmployee(int Id, Employee employee)
+        public ResponseMessage<Employee> UpdateEmployee(int Id, Employee employee)
         {
             try
             {
@@ -365,7 +391,7 @@ namespace RepositoryLayer.Services
                 command.Parameters.AddWithValue("@EmailId", employee.EmailId);
                 command.Parameters.AddWithValue("@Mobile", employee.Mobile);
                 command.Parameters.AddWithValue("@Address", employee.Address);
-                command.Parameters.AddWithValue("@DOB", employee.DOB);
+                command.Parameters.AddWithValue("@BirthDate", employee.BirthDate);
                 command.Parameters.AddWithValue("@Employment", employee.Employment);
 
                 //Oppening Connetion.
@@ -377,22 +403,22 @@ namespace RepositoryLayer.Services
                 //closing Connection.
                 connection.Close();
 
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
                 if (i >= 1)
                 {
-                    Message message = new Message();
                     message.Status = "True";
-                    message.ResponseMessage = "Emplyee Details Updated Successfully";
-                    message.Data = employee.ToString();
-                    return message;
+                    message.Message = "Emplyee Details Updated Successfully";
+                    message.Data = employee;
+                    
                 }
                 else
                 {
-                    Message message = new Message();
                     message.Status = "False";
-                    message.ResponseMessage = "Update Attempt Failed";
-                    message.Data = employee.ToString();
-                    return message;
+                    message.Message = "Update Attempt Failed";
+                    message.Data = employee;
                 }
+                return message;
             }
             catch (Exception exception)
             {
@@ -405,7 +431,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public Message DeleteEmployee(int Id)
+        public ResponseMessage<int> DeleteEmployee(int Id)
         {
             try
             {
@@ -428,22 +454,21 @@ namespace RepositoryLayer.Services
                 //Closing Connection.
                 connection.Close();
 
+                //Creating ResponseMessage Instance For Response.
+                ResponseMessage<int> message = new ResponseMessage<int>();
                 if (i >= 1)
                 {
-                    Message message = new Message();
                     message.Status = "True";
-                    message.ResponseMessage = "Employee Details Deleted";
-                    message.Data = Id.ToString();
-                    return message;
+                    message.Message = "Employee Details Deleted";
+                    message.Data = Id;
                 }
                 else
                 {
-                    Message message = new Message();
                     message.Status = "False";
-                    message.ResponseMessage = "Employee Details Deletion Failed";
-                    message.Data = Id.ToString();
-                    return message;
+                    message.Message = "Employee Details Deletion Failed";
+                    message.Data = Id;
                 }
+                return message;
             }
             catch (Exception exception)
             {

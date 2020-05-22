@@ -37,8 +37,15 @@ namespace EmployeeManagement.Controllers
         [HttpPost("registeruser")]
         public IActionResult RegisterUser([FromBody]User data)
         {
-            Message response = employeeManagementBL.RegisterUser(data);
-            return Ok(new { response });
+            try
+            {
+                ResponseMessage<User> response = employeeManagementBL.RegisterUser(data);
+                return Ok(new { response.Status,response.Message,response.Data.UserName });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -49,8 +56,15 @@ namespace EmployeeManagement.Controllers
         [HttpPost("login")]
         public IActionResult LoginUser([FromBody]User data)
         {
-            Message response = employeeManagementBL.LoginUser(data);
-            return Ok(new { response });
+            try
+            {
+                ResponseMessage<User> response = employeeManagementBL.LoginUser(data);
+                return Ok(new { response.Status, response.Message, response.Data.UserName });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -58,22 +72,36 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        [HttpPost("registeremployee")]
+        [HttpPost]
         public IActionResult RegisterEmployee([FromBody]Employee employee)
         {
-            Message response = employeeManagementBL.RegisterEmployee(employee);
-            return Ok(new { response });
+            try
+            {
+                ResponseMessage<Employee> response = employeeManagementBL.RegisterEmployee(employee);
+                return Ok(new { response.Status,response.Message,response.Data });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
         /// Function To Get All Employees.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getemployees")]
+        [HttpGet]
         public IActionResult GetEmployees()
         {
-            List<Employee> employees = employeeManagementBL.GetEmployees();
-            return Ok(new { employees });
+            try
+            {
+                ResponseMessage<List<Employee>> response = employeeManagementBL.GetEmployees();
+                return Ok(new { response.Status,response.Message,response.Data });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -81,11 +109,18 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        [HttpGet("getemployee/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetEmployee([FromRoute]int Id)
         {
-            Employee employee = employeeManagementBL.GetEmployee(Id);
-            return Ok(new { employee });
+            try
+            {
+                ResponseMessage<Employee> response = employeeManagementBL.GetEmployee(Id);
+                return Ok(new { response.Status, response.Message, response.Data });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -94,23 +129,37 @@ namespace EmployeeManagement.Controllers
         /// <param name="Id"></param>
         /// <param name="employee"></param>
         /// <returns></returns>
-        [HttpPut("updateemployee/{Id}")]
+        [HttpPut("{Id}")]
         public IActionResult UpdateEmployee([FromRoute]int Id, [FromBody]Employee employee)
         {
-            Message response = employeeManagementBL.UpdateEmployee(Id, employee);
-            return Ok(new { response });
+            try
+            {
+                ResponseMessage<Employee> response = employeeManagementBL.UpdateEmployee(Id, employee);
+                return Ok(new { response.Status, response.Message, response.Data });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
-
+        
         /// <summary>
         /// Function To Delete Employee Details.
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        [HttpDelete("deleteemployee/{Id}")]
+        [HttpDelete("{Id}")]
         public IActionResult DeleteEmployee([FromRoute]int Id)
         {
-            Message response = employeeManagementBL.DeleteEmployee(Id);
-            return Ok(new { response });
+            try
+            {
+                ResponseMessage<int> response = employeeManagementBL.DeleteEmployee(Id);
+                return Ok(new { response.Status, response.Message, response.Data });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

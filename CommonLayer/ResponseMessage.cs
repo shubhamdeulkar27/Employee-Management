@@ -7,11 +7,11 @@ namespace CommonLayer
     /// <summary>
     /// Class For Response Message.
     /// </summary>
-    public class Message
+    public class ResponseMessage<T>
     {
         //Properties For Response.
         public string Status { get; set; }
-        public string ResponseMessage { get; set; }
-        public string Data { get; set; }
+        public string Message { get; set; }
+        public T Data { get; set; }
     }
 }

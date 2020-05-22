@@ -15,47 +15,47 @@ namespace BusinessLayer.Interface
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Message RegisterUser(User user);
+        ResponseMessage<User> RegisterUser(User user);
 
         /// <summary>
         /// Abstract Function For LginUser Implementation.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Message LoginUser(User data);
+        ResponseMessage<User> LoginUser(User data);
 
         /// <summary>
         /// Abstract Function to Register Employee Implementation.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Message RegisterEmployee(Employee data);
+        ResponseMessage<Employee> RegisterEmployee(Employee data);
 
         /// <summary>
         /// Abstract Function For Implementation Of GetEmployees.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        List<Employee> GetEmployees();
+        ResponseMessage<List<Employee>> GetEmployees();
 
         /// <summary>
         /// Abstract Function For Implementation Of Get Specific Employee Details Function.
         /// </summary>
         /// <returns></returns>
-        Employee GetEmployee(int Id);
+        ResponseMessage<Employee> GetEmployee(int Id);
 
         /// <summary>
         /// Abstract Function For Implementation Of Update Employee Function.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Message UpdateEmployee(int Id,Employee data);
+        ResponseMessage<Employee> UpdateEmployee(int Id,Employee data);
 
         /// <summary>
         /// Abstract Function For Implementation Of Delete Employee Details Function.
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        Message DeleteEmployee(int Id);
+        ResponseMessage<int> DeleteEmployee(int Id);
     }
 }

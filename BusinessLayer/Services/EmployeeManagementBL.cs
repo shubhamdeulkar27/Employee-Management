@@ -29,7 +29,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Message RegisterUser(User user)
+        public ResponseMessage<User> RegisterUser(User user)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Message LoginUser(User user)
+        public ResponseMessage<User> LoginUser(User user)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public Message RegisterEmployee(Employee employee)
+        public ResponseMessage<Employee> RegisterEmployee(Employee employee)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace BusinessLayer.Services
         /// Function to Get Employees.
         /// </summary>
         /// <returns></returns>
-        public List<Employee> GetEmployees()
+        public ResponseMessage<List<Employee>> GetEmployees()
         {
             try
             {
@@ -96,7 +96,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public Employee GetEmployee(int Id)
+        public ResponseMessage<Employee> GetEmployee(int Id)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public Message UpdateEmployee(int Id,Employee employee)
+        public ResponseMessage<Employee> UpdateEmployee(int Id,Employee employee)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public Message DeleteEmployee(int Id)
+        public ResponseMessage<int> DeleteEmployee(int Id)
         {
             try
             {
