@@ -234,7 +234,7 @@ namespace RepositoryLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 

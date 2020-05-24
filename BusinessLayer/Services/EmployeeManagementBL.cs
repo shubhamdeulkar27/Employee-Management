@@ -71,7 +71,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 

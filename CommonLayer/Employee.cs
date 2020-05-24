@@ -24,12 +24,15 @@ namespace CommonLayer
         public string EmailId { get; set; }
 
         [Required(ErrorMessage ="Mobile Number Required")]
-        [MinLength(10)]
+        [MinLength(10,ErrorMessage="Enter Valid Mobile Number")]
+        [RegularExpression("^[0-9]+$",ErrorMessage = "Mobile Number Can Only Have Numbers")]
         public string Mobile { get; set; }
 
         [Required(ErrorMessage ="Address Required")]
+        [MinLength(10,ErrorMessage ="Please Add Valid Address")]
         public string Address { get; set; }
 
+//        [RegularExpression("^(?=.*?[0-9])(?=.*?[/])")]
         public string BirthDate { get; set; }
 
         [Required(ErrorMessage ="Employment Required")]

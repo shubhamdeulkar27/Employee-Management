@@ -80,9 +80,9 @@ namespace EmployeeManagement.Controllers
                 ResponseMessage<Employee> response = employeeManagementBL.RegisterEmployee(employee);
                 return Ok(new { response.Status,response.Message,response.Data });
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success=false,message=exception.Message});
             }
         }
 
