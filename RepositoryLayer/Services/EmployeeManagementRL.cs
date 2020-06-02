@@ -51,7 +51,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseMessage<User> RegisterUser(User user)
+        public bool RegisterUser(User user)
         {
             try
             {
@@ -64,8 +64,10 @@ namespace RepositoryLayer.Services
                 //Creating Sql Comman For Stored Procedure.
                 SqlCommand command = new SqlCommand("spRegisterUser", connection);
                 command.CommandType = CommandType.StoredProcedure;
-                
+
                 //Setting Parameters.
+                command.Parameters.AddWithValue("@Role", user.Role);
+                command.Parameters.AddWithValue("@EmailId", user.EmailId);
                 command.Parameters.AddWithValue("@UserName", user.UserName);
                 command.Parameters.AddWithValue("@Password", encryptedPassword);
 
@@ -78,25 +80,18 @@ namespace RepositoryLayer.Services
                 //Clossing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<User> message = new ResponseMessage<User>();
                 if (i >= 1)
                 {
-                    message.Status = "True";
-                    message.Message = "User Resgisterd";
-                    message.Data = user;
+                    return true;
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "User Not Resgisterd";
-                    message.Data = user;
+                    return false;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -125,7 +120,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseMessage<User> LoginUser(User user)
+        public bool LoginUser(User user)
         {
             try
             {
@@ -160,25 +155,18 @@ namespace RepositoryLayer.Services
                 //Clossing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<User> message = new ResponseMessage<User>();
                 if (status >= 1)
                 {
-                    message.Status = "True";
-                    message.Message = "Login Successfull";
-                    message.Data = user;
+                    return true;
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "Login Attempt Failed";
-                    message.Data = user;
+                    return false;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -187,7 +175,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> RegisterEmployee(Employee employee)
+        public bool RegisterEmployee(Employee employee)
         {
             try
             {
@@ -216,21 +204,14 @@ namespace RepositoryLayer.Services
                 //closing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
                 if (i >= 1)
                 {
-                    message.Status = "True";
-                    message.Message = "Emplyee Registered Successfully";
-                    message.Data = employee;
+                    return true;
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "Emplyee Registered Failed";
-                    message.Data = employee;
-                }
-                return message;
+                    return false;
+                }    
             }
             catch (Exception exception)
             {
@@ -242,7 +223,7 @@ namespace RepositoryLayer.Services
         /// Function To Get All Employees.
         /// </summary>
         /// <returns></returns>
-        public ResponseMessage<List<Employee>> GetEmployees()
+        public List<Employee> GetEmployees()
         {
             try
             {
@@ -280,25 +261,18 @@ namespace RepositoryLayer.Services
                 //Closing Connection.
                 connection.Close();
 
-                //Creating Instance Of ResponsMessage For Sending Response.
-                ResponseMessage<List<Employee>> message = new ResponseMessage<List<Employee>>();
                 if (employeeList.Count != 0)
                 {
-                    message.Status = "True";
-                    message.Message = "Employee List Fetched Successfully";
-                    message.Data = employeeList;
+                    return employeeList;
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "Employee List Fetching Attempt Failed";
-                    message.Data = employeeList;
+                    return null;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -307,7 +281,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> GetEmployee(int Id)
+        public Employee GetEmployee(int Id)
         {
             try
             {
@@ -345,25 +319,18 @@ namespace RepositoryLayer.Services
                 //Closing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
                 if (employeeData != null)
                 {
-                    message.Status = "True";
-                    message.Message = "Employee Details Fetched Successfully";
-                    message.Data = employeeData;
+                    return employeeData;
                 }
                 else
                 {
-                    message.Status = "True";
-                    message.Message = "Employee Details Fetched Successfully";
-                    message.Data = employeeData;
+                    return null;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -373,7 +340,7 @@ namespace RepositoryLayer.Services
         /// <param name="Id"></param>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> UpdateEmployee(int Id, Employee employee)
+        public bool UpdateEmployee(int Id, Employee employee)
         {
             try
             {
@@ -403,26 +370,18 @@ namespace RepositoryLayer.Services
                 //closing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<Employee> message = new ResponseMessage<Employee>();
                 if (i >= 1)
                 {
-                    message.Status = "True";
-                    message.Message = "Emplyee Details Updated Successfully";
-                    message.Data = employee;
-                    
+                    return true; 
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "Update Attempt Failed";
-                    message.Data = employee;
+                    return false;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -431,7 +390,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public ResponseMessage<int> DeleteEmployee(int Id)
+        public bool DeleteEmployee(int Id)
         {
             try
             {
@@ -454,25 +413,18 @@ namespace RepositoryLayer.Services
                 //Closing Connection.
                 connection.Close();
 
-                //Creating ResponseMessage Instance For Response.
-                ResponseMessage<int> message = new ResponseMessage<int>();
                 if (i >= 1)
                 {
-                    message.Status = "True";
-                    message.Message = "Employee Details Deleted";
-                    message.Data = Id;
+                    return true;
                 }
                 else
                 {
-                    message.Status = "False";
-                    message.Message = "Employee Details Deletion Failed";
-                    message.Data = Id;
+                    return false;
                 }
-                return message;
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
     }

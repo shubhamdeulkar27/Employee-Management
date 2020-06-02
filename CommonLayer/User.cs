@@ -10,9 +10,15 @@ namespace CommonLayer
     /// </summary>
     public class User
     {
+        [RegularExpression("^[a-zA-Z]+$",ErrorMessage ="Role Should Contain Only Characters")]
+        public string Role { get; set; }
+
+        [EmailAddress(ErrorMessage = "EmailId Required")]
+        public string EmailId { get; set; }
+
         [Required(ErrorMessage ="UserName Is Required")]
         [MinLength(6)]
-        [RegularExpression("^([a-zA-Z0-9]{1,15})$", ErrorMessage ="Invalid UserName")]
+        [RegularExpression("^[a-zA-Z0-9]+([.@]?[a-zA-Z0-9]+)*$", ErrorMessage ="Invalid UserName")]
         public string UserName { get; set; }
         
         [Required (ErrorMessage ="Password Is Required")]

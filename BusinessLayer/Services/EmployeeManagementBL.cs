@@ -8,7 +8,7 @@ using System.Text;
 namespace BusinessLayer.Services
 {
     /// <summary>
-    /// Business Logic Layer Class Fr User.
+    /// Business Logic Layer Class.
     /// </summary>
     public class EmployeeManagementBL : IEmployeeManagementBL
     {
@@ -29,7 +29,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseMessage<User> RegisterUser(User user)
+        public bool RegisterUser(User user)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -46,7 +46,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public ResponseMessage<User> LoginUser(User user)
+        public bool LoginUser(User user)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -63,7 +63,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> RegisterEmployee(Employee employee)
+        public bool RegisterEmployee(Employee employee)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace BusinessLayer.Services
         /// Function to Get Employees.
         /// </summary>
         /// <returns></returns>
-        public ResponseMessage<List<Employee>> GetEmployees()
+        public List<Employee> GetEmployees()
         {
             try
             {
@@ -87,7 +87,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -96,7 +96,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> GetEmployee(int Id)
+        public Employee GetEmployee(int Id)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -113,7 +113,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="employee"></param>
         /// <returns></returns>
-        public ResponseMessage<Employee> UpdateEmployee(int Id,Employee employee)
+        public bool UpdateEmployee(int Id,Employee employee)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
 
@@ -130,7 +130,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public ResponseMessage<int> DeleteEmployee(int Id)
+        public bool DeleteEmployee(int Id)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(exception.Message);
+                throw exception;
             }
         }
     }

@@ -16,47 +16,47 @@ namespace RepositoryLayer.Interface
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        ResponseMessage<User> RegisterUser(User data);
+        bool RegisterUser(User data);
 
         /// <summary>
         /// Abstract Function For Login User.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        ResponseMessage<User> LoginUser(User data);
+        bool LoginUser(User data);
 
         /// <summary>
         /// Abstract Function to Register Employee Implementation.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        ResponseMessage<Employee> RegisterEmployee(Employee data);
+        bool RegisterEmployee(Employee data);
 
         /// <summary>
         /// Abstract Function For Implementation Of GetEmployees.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        ResponseMessage<List<Employee>> GetEmployees();
+        List<Employee> GetEmployees();
 
         /// <summary>
         /// Abstract Function For Implementation Of Get Specific Employee Details Function.
         /// </summary>
         /// <returns></returns>
-        ResponseMessage<Employee> GetEmployee(int Id);
+        Employee GetEmployee(int Id);
 
         /// <summary>
         /// Abstract Functon For Implementation Of Update Employee Function.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        ResponseMessage<Employee> UpdateEmployee(int Id, Employee data);
+        bool UpdateEmployee(int Id, Employee data);
 
         /// <summary>
         /// Abstract Function For Implementation Of Delete Employee Details Function.
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        ResponseMessage<int> DeleteEmployee(int Id);
+        bool DeleteEmployee(int Id);
     }
 }

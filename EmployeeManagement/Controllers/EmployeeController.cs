@@ -39,12 +39,20 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<User> response = employeeManagementBL.RegisterUser(data);
-                return Ok(new { response.Status,response.Message,response.Data.UserName });
+                bool result = employeeManagementBL.RegisterUser(data);
+                if (result == true)
+                {
+                    return Ok(new { Success = "True", Message = "User Registration Successful", Data = data });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "User Registration Failed", Data = data });
+                }
+                
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success = "False", message = exception.Message });
             }
         }
 
@@ -58,12 +66,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<User> response = employeeManagementBL.LoginUser(data);
-                return Ok(new { response.Status, response.Message, response.Data.UserName });
+                bool result = employeeManagementBL.LoginUser(data);
+                if (result == true)
+                {
+                    return Ok(new { Success = "True", Message = "User Login Successful", Data = data.UserName });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "User Login Failed", Data = data.UserName });
+                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success = "False", message = exception.Message});
             }
         }
 
@@ -77,12 +92,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<Employee> response = employeeManagementBL.RegisterEmployee(employee);
-                return Ok(new { response.Status,response.Message,response.Data });
+                bool result = employeeManagementBL.RegisterEmployee(employee);
+                if (result == true)
+                {
+                    return Ok(new { Success = "True", Message = "Employee Registration Successful", Data = employee });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "Employee Registration Failed", Data = employee });
+                }
             }
             catch (Exception exception)
             {
-                return BadRequest(new { Success=false,message=exception.Message});
+                return BadRequest(new { Success=false, message=exception.Message});
             }
         }
 
@@ -95,12 +117,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<List<Employee>> response = employeeManagementBL.GetEmployees();
-                return Ok(new { response.Status,response.Message,response.Data });
+                List<Employee> employees = employeeManagementBL.GetEmployees();
+                if (employees!=null)
+                {
+                    return Ok(new { Success = "True", Message = "Employee List Fetched Successfully", Data = employees });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "Employee List Fetching Failed", Data = employees });
+                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success = "False" , message = exception.Message});
             }
         }
 
@@ -114,12 +143,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<Employee> response = employeeManagementBL.GetEmployee(Id);
-                return Ok(new { response.Status, response.Message, response.Data });
+                Employee employee = employeeManagementBL.GetEmployee(Id);
+                if (employee != null)
+                {
+                    return Ok(new { Success = "True", Message = "Employee Detail Fetched Successfully", Data = employee });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "Employee Detail Fetching Failed", Data = employee });
+                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success="False" , message = exception.Message});
             }
         }
 
@@ -134,12 +170,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<Employee> response = employeeManagementBL.UpdateEmployee(Id, employee);
-                return Ok(new { response.Status, response.Message, response.Data });
+                bool result = employeeManagementBL.UpdateEmployee(Id, employee);
+                if (result == true)
+                {
+                    return Ok(new { Success = "True", Message = "Employee Details Updated Successfuly", Data = employee });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "Employee Details Updation Failed", Data = employee });
+                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success = "False" , message = exception });
             }
         }
         
@@ -153,12 +196,19 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                ResponseMessage<int> response = employeeManagementBL.DeleteEmployee(Id);
-                return Ok(new { response.Status, response.Message, response.Data });
+                bool result = employeeManagementBL.DeleteEmployee(Id);
+                if (result == true)
+                {
+                    return Ok(new { Success = "True", Message = "Employee Deleted Successfuly", Data = Id });
+                }
+                else
+                {
+                    return Ok(new { Success = "False", Message = "Employee Deletion Failed", Data = Id });
+                }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return BadRequest();
+                return BadRequest(new { Success="False" , message = exception.Message});
             }
         }
     }
