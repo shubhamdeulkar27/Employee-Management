@@ -97,18 +97,18 @@ namespace EmployeeManagementTests
             employeeOne.FirstName = "Abhi";
             employeeOne.LastName = "Fuke";
             employeeOne.EmailId = "abhi.fuke@gmail.com";
-            employeeOne.Mobile = 1234567890;
+            employeeOne.Mobile = "1234567890";
             employeeOne.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-            employeeOne.DOB = "17/5/1996";
+            employeeOne.BirthDate = "17/5/1996";
             employeeOne.Employment = "Full-Time";
 
             Employee employeeTwo = new Employee();
             employeeTwo.FirstName = "Abhi";
             employeeTwo.LastName = "Fuke";
             employeeTwo.EmailId = "abhi.fuke@gmail.com";
-            employeeTwo.Mobile = 1234567890;
+            employeeTwo.Mobile = "1234567890";
             employeeTwo.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-            employeeTwo.DOB = "17/5/1996";
+            employeeTwo.BirthDate = "17/5/1996";
             employeeTwo.Employment = "Full-Time";
 
             //Asserting Values.
@@ -129,9 +129,9 @@ namespace EmployeeManagementTests
                 employee.FirstName = null;
                 employee.LastName = "fuke";
                 employee.EmailId = "abhi.fuke@gmail.com";
-                employee.Mobile = 1234567890;
+                employee.Mobile = "1234567890";
                 employee.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = "Full-Time";
             }
             catch (Exception exception)
@@ -155,9 +155,9 @@ namespace EmployeeManagementTests
                 employee.FirstName = "Abhi";
                 employee.LastName = null;
                 employee.EmailId = "abhi.fuke @gmail.com";
-                employee.Mobile = 1234567890;
+                employee.Mobile = "1234567890";
                 employee.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = "Full-Time";
             }
             catch (Exception exception)
@@ -181,9 +181,9 @@ namespace EmployeeManagementTests
                 employee.FirstName = "Abhi";
                 employee.LastName = "Fuke";
                 employee.EmailId = null;
-                employee.Mobile = 1234567890;
+                employee.Mobile = "1234567890";
                 employee.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = "Full-Time";
             }
             catch (Exception exception)
@@ -208,7 +208,7 @@ namespace EmployeeManagementTests
                 employee.LastName = "Fuke";
                 employee.EmailId = "abhi.fuke@gmail.com";
                 employee.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = "Full-Time";
             }
             catch (Exception exception)
@@ -232,9 +232,9 @@ namespace EmployeeManagementTests
                 employee.FirstName = "Abhi";
                 employee.LastName = "Fuke";
                 employee.EmailId = "abhi.fuke@gmail.com";
-                employee.Mobile = 9874561320;
+                employee.Mobile = "9874561320";
                 employee.Address = null;
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = "Full-Time";
             }
             catch (Exception exception)
@@ -258,9 +258,9 @@ namespace EmployeeManagementTests
                 employee.FirstName = "Abhi";
                 employee.LastName = "Fuke";
                 employee.EmailId = "abhi.fuke@gmail.com";
-                employee.Mobile = 9874561320;
+                employee.Mobile = "9874561320";
                 employee.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-                employee.DOB = "17/5/1996";
+                employee.BirthDate = "17/5/1996";
                 employee.Employment = null;
             }
             catch (Exception exception)
