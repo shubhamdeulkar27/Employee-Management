@@ -7,7 +7,7 @@ namespace CommonLayer
     /// <summary>
     /// Class For Handelling Custom Exception.
     /// </summary>
-    class CustomExceptions : Exception 
+    public class CustomExceptions : Exception 
     {
         /// <summary>
         /// Enum For Custom Exceptions.

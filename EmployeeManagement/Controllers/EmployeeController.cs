@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using BusinessLayer.Interface;
 using CommonLayer;
@@ -39,6 +41,18 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If Field is Empty Will Throw Custom Exception and Return BadRequest.
+                if (data.Role=="" || data.EmailId=="" || data.UserName=="" || data.Password=="") 
+                {
+                    return BadRequest(new { Success = false, message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
+                //If field Is set to null then throw custome exception and return BadRequest.
+                if (data.Role == null|| data.EmailId == null|| data.UserName == null || data.Password == null)
+                {
+                    return BadRequest(new { Success = false, message = CustomExceptions.ExceptionType.NULL_FIELD_EXCEPTION});
+                }
+
                 bool result = employeeManagementBL.RegisterUser(data);
                 if (result == true)
                 {
@@ -66,6 +80,18 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If field is empty then will throw custom exception and return BadRequest.
+                if (data.UserName=="" || data.Password=="") 
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
+                //If field is null then will throw custom Exception and return BadRequest.
+                if (data.UserName == null || data.Password == null)
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.NULL_FIELD_EXCEPTION });
+                }
+
                 bool result = employeeManagementBL.LoginUser(data);
                 if (result == true)
                 {
@@ -92,6 +118,18 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If Fields are empty then will throw custom exception and return BadRequest.
+                if (employee.FirstName=="" || employee.LastName=="" || employee.EmailId=="" || employee.Mobile=="" ||employee.Address==""|| employee.Employment=="") 
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
+                //If fields are set null then throw custom exception and return BadRequest.
+                if (employee.FirstName == null || employee.LastName == null || employee.EmailId == "" || employee.Mobile == "" || employee.Address == "" || employee.Employment == "")
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
                 bool result = employeeManagementBL.RegisterEmployee(employee);
                 if (result == true)
                 {
@@ -143,6 +181,12 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If Id Is Invalid then Throw Custom Exception and Return Bad Request.
+                if(Id<0)
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
                 Employee employee = employeeManagementBL.GetEmployee(Id);
                 if (employee != null)
                 {
@@ -170,6 +214,24 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If Id is invalid then throw custom exception and return BadRequest.
+                if(Id<0)
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
+                //If Fields are empty then will throw custom exception and return BadRequest.
+                if (employee.FirstName == "" || employee.LastName == "" || employee.EmailId == "" || employee.Mobile == "" || employee.Address == "" || employee.Employment == "")
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
+                //If fields are set null then throw custom exception and return BadRequest.
+                if (employee.FirstName == null || employee.LastName == null || employee.EmailId == "" || employee.Mobile == "" || employee.Address == "" || employee.Employment == "")
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
                 bool result = employeeManagementBL.UpdateEmployee(Id, employee);
                 if (result == true)
                 {
@@ -196,6 +258,12 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //If Id is invalid then throw custom exception and return BadRequest.
+                if (Id < 0)
+                {
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
+                }
+
                 bool result = employeeManagementBL.DeleteEmployee(Id);
                 if (result == true)
                 {
