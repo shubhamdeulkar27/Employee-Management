@@ -209,12 +209,39 @@ namespace EmployeeManagement.Controllers
             try
             {
                 //If Id Is Invalid then Throw Custom Exception and Return Bad Request.
-                if(Id<0)
+                if (Id < 0)
                 {
                     return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
                 }
 
-                Employee employee = employeeManagementBL.GetEmployee(Id);
+                //Employee Reference For Storing Employee Details.
+                Employee employee;
+                
+                //Variables For Redis Cache.
+                string cacheKey = Id.ToString();
+                string serializedEmployee;
+
+                //Getting Employee Details From Redis Cache.
+                var encodedEmployee = distributedCache.Get(cacheKey);
+
+                //If Redis has employee detail then it will fetch from Redis else it will fetch from Database.
+                if(encodedEmployee!=null)
+                {
+                    serializedEmployee = Encoding.UTF8.GetString(encodedEmployee);
+                    employee = JsonConvert.DeserializeObject<Employee>(serializedEmployee);
+                }
+                else
+                {
+                    employee = employeeManagementBL.GetEmployee(Id);
+                    serializedEmployee = JsonConvert.SerializeObject(employee);
+                    encodedEmployee = Encoding.UTF8.GetBytes(serializedEmployee);
+                    var options = new DistributedCacheEntryOptions()
+                                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                                     .SetAbsoluteExpiration(DateTime.Now.AddHours(6));
+                    distributedCache.Set(cacheKey, encodedEmployee, options);
+                }
+
+                //Sending Response Depending Employee Details.
                 if (employee != null)
                 {
                     return Ok(new { Success = "True", Message = "Employee Detail Fetched Successfully", Data = employee });
