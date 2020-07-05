@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
+using System.Text;
 using BusinessLayer.Interface;
 using CommonLayer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RepositoryLayer.Interface;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace EmployeeManagement.Controllers
 {
@@ -21,13 +16,17 @@ namespace EmployeeManagement.Controllers
         //Bussiness Layer Refernces.
         private IEmployeeManagementBL employeeManagementBL;
 
+        //IDistributed Reference For Redis Cache.
+        private readonly IDistributedCache distributedCache;
+
         /// <summary>
         /// Parameter Constructor For Setting EmployeeManagementBL Object.
         /// </summary>
         /// <param name="employeeManagementBL"></param>
-        public EmployeeController(IEmployeeManagementBL employeeManagementBL)
+        public EmployeeController(IEmployeeManagementBL employeeManagementBL, IDistributedCache distributedCache)
         {
             this.employeeManagementBL = employeeManagementBL;
+            this.distributedCache = distributedCache;
         }
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace EmployeeManagement.Controllers
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "User Registration Failed", Data = data });
+                    return Ok(new { Success = "True", Message = "User Already Exists", Data = data });
                 }
                 
             }
@@ -155,14 +154,42 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
-                List<Employee> employees = employeeManagementBL.GetEmployees();
+                //List for Employees.
+                List<Employee> employees;
+
+                //Variables For Cache.
+                string cacheKey = "employees";
+                string serializedList;
+
+                //Getting Encoded Employee List From Redis Cache.
+                var encodedList = distributedCache.Get(cacheKey);
+                
+                //If redis cache has the data then List will be fetched from redis else
+                //it will fetch data from Database.
+                if(encodedList !=null)
+                {
+                    serializedList = Encoding.UTF8.GetString(encodedList);
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(serializedList);
+                }
+                else
+                {
+                    employees = employeeManagementBL.GetEmployees();
+                    serializedList = JsonConvert.SerializeObject(employees);
+                    encodedList = Encoding.UTF8.GetBytes(serializedList);
+                    var options = new DistributedCacheEntryOptions()
+                                      .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                                      .SetAbsoluteExpiration(DateTime.Now.AddHours(6));
+                    distributedCache.Set(cacheKey, encodedList, options);
+                }
+
+                //Sending Resonses Depending On Employee List.
                 if (employees!=null)
                 {
                     return Ok(new { Success = "True", Message = "Employee List Fetched Successfully", Data = employees });
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "Employee List Fetching Failed", Data = employees });
+                    return Ok(new { Success = "True", Message = "Employee Details Not Exists", Data = employees });
                 }
             }
             catch (Exception exception)

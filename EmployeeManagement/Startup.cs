@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLayer.Interface;
+﻿using BusinessLayer.Interface;
 using BusinessLayer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using Swashbuckle.AspNetCore.Swagger;
+
 
 namespace EmployeeManagement
 {
@@ -34,6 +29,10 @@ namespace EmployeeManagement
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<IEmployeeManagementRL, EmployeeManagementRL>();
             services.AddTransient<IEmployeeManagementBL, EmployeeManagementBL>();
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
