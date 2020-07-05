@@ -117,6 +117,9 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //Key For Redis Cache
+                string cacheKey = "employees";
+
                 //If Fields are empty then will throw custom exception and return BadRequest.
                 if (employee.FirstName=="" || employee.LastName=="" || employee.EmailId=="" || employee.Mobile=="" ||employee.Address==""|| employee.Employment=="") 
                 {
@@ -132,6 +135,8 @@ namespace EmployeeManagement.Controllers
                 bool result = employeeManagementBL.RegisterEmployee(employee);
                 if (result == true)
                 {
+                    //If new Employee Details are Added then cache will be cleared.
+                    distributedCache.Remove(cacheKey);
                     return Ok(new { Success = "True", Message = "Employee Registration Successful", Data = employee });
                 }
                 else
