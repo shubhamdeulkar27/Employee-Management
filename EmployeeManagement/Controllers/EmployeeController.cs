@@ -298,6 +298,7 @@ namespace EmployeeManagement.Controllers
                 bool result = employeeManagementBL.UpdateEmployee(Id, employee);
                 if (result == true)
                 {
+                    //Clearing Redis Cache.
                     distributedCache.Remove(cacheKeyForEmployees);
                     distributedCache.Remove(cacheKeyForEmployee);
                     return Ok(new { Success = "True", Message = "Employee Details Updated Successfuly", Data = employee });
@@ -323,6 +324,10 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //Keys for Redis Cache.
+                string cacheKeyForEmployees = "employees";
+                string cacheKeyForEmployee = Id.ToString();
+
                 //If Id is invalid then throw custom exception and return BadRequest.
                 if (Id < 0)
                 {
@@ -332,6 +337,9 @@ namespace EmployeeManagement.Controllers
                 bool result = employeeManagementBL.DeleteEmployee(Id);
                 if (result == true)
                 {
+                    //Clearing Redis Cache.
+                    distributedCache.Remove(cacheKeyForEmployees);
+                    distributedCache.Remove(cacheKeyForEmployee);
                     return Ok(new { Success = "True", Message = "Employee Deleted Successfuly", Data = Id });
                 }
                 else
