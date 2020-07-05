@@ -273,8 +273,12 @@ namespace EmployeeManagement.Controllers
         {
             try
             {
+                //Keys for Redis Cache.
+                string cacheKeyForEmployees = "employees";
+                string cacheKeyForEmployee = Id.ToString();
+
                 //If Id is invalid then throw custom exception and return BadRequest.
-                if(Id<0)
+                if (Id<0)
                 {
                     return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION });
                 }
@@ -294,11 +298,13 @@ namespace EmployeeManagement.Controllers
                 bool result = employeeManagementBL.UpdateEmployee(Id, employee);
                 if (result == true)
                 {
+                    distributedCache.Remove(cacheKeyForEmployees);
+                    distributedCache.Remove(cacheKeyForEmployee);
                     return Ok(new { Success = "True", Message = "Employee Details Updated Successfuly", Data = employee });
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "Employee Details Updation Failed", Data = employee });
+                    return Ok(new { Success = "True", Message = "Employee Details Updation Failed", Data = employee });
                 }
             }
             catch (Exception exception)
