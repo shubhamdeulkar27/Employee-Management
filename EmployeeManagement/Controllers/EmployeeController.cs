@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using BusinessLayer.Interface;
 using CommonLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace EmployeeManagement.Controllers
@@ -13,6 +17,9 @@ namespace EmployeeManagement.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        //IConfiguration Reference For JWT Token.
+        private IConfiguration configuration;
+
         //Bussiness Layer Refernces.
         private IEmployeeManagementBL employeeManagementBL;
 
@@ -23,10 +30,11 @@ namespace EmployeeManagement.Controllers
         /// Parameter Constructor For Setting EmployeeManagementBL Object.
         /// </summary>
         /// <param name="employeeManagementBL"></param>
-        public EmployeeController(IEmployeeManagementBL employeeManagementBL, IDistributedCache distributedCache)
+        public EmployeeController(IEmployeeManagementBL employeeManagementBL, IDistributedCache distributedCache,IConfiguration configuration)
         {
             this.employeeManagementBL = employeeManagementBL;
             this.distributedCache = distributedCache;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -74,6 +82,7 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult LoginUser([FromBody]User data)
         {
@@ -91,20 +100,42 @@ namespace EmployeeManagement.Controllers
                     return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.NULL_FIELD_EXCEPTION });
                 }
 
+                //Set Response For Unauthorized.
+                IActionResult response = Unauthorized();
+
                 bool result = employeeManagementBL.LoginUser(data);
                 if (result == true)
                 {
-                    return Ok(new { Success = "True", Message = "User Login Successful", Data = data.UserName });
+                    var tokenString = GenerateJsonWebToken(data);
+                    return Ok(new { token = tokenString});
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "User Login Failed", Data = data.UserName });
+                    return response;
                 }
             }
             catch (Exception exception)
             {
                 return BadRequest(new { Success = "False", message = exception.Message});
             }
+        }
+
+        /// <summary>
+        /// Function For JsonToken Generation.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private string GenerateJsonWebToken(User data)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                            configuration["Jwt:Audiance"],
+                            null,
+                            expires: DateTime.Now.AddMinutes(120),
+                            signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         /// <summary>
@@ -155,6 +186,7 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public IActionResult GetEmployees()
         {
             try
@@ -182,7 +214,7 @@ namespace EmployeeManagement.Controllers
                     serializedList = JsonConvert.SerializeObject(employees);
                     encodedList = Encoding.UTF8.GetBytes(serializedList);
                     var options = new DistributedCacheEntryOptions()
-                                      .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                                      .SetSlidingExpiration(TimeSpan.FromMinutes(20))
                                       .SetAbsoluteExpiration(DateTime.Now.AddHours(6));
                     distributedCache.Set(cacheKey, encodedList, options);
                 }
@@ -241,7 +273,7 @@ namespace EmployeeManagement.Controllers
                     serializedEmployee = JsonConvert.SerializeObject(employee);
                     encodedEmployee = Encoding.UTF8.GetBytes(serializedEmployee);
                     var options = new DistributedCacheEntryOptions()
-                                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                                     .SetSlidingExpiration(TimeSpan.FromMinutes(20))
                                      .SetAbsoluteExpiration(DateTime.Now.AddHours(6));
                     distributedCache.Set(cacheKey, encodedEmployee, options);
                 }
