@@ -23,7 +23,7 @@ namespace RepositoryLayer.Interface
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        bool LoginUser(User data);
+        User LoginUser(User data);
 
         /// <summary>
         /// Abstract Function to Register Employee Implementation.

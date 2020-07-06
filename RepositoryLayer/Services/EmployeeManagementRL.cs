@@ -120,7 +120,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool LoginUser(User user)
+        public User LoginUser(User user)
         {
             try
             {
@@ -143,26 +143,23 @@ namespace RepositoryLayer.Services
 
                 //Executing Store Procedure.
                 SqlDataReader reader = command.ExecuteReader();
-                
-                int status=0;
+
+                User userData = new User();
                 
                 //While Loop For Reading status result from SqlDataReader.
                 while (reader.Read())
                 {
-                    status = reader.GetInt32(0);
+                    userData.Role = reader["Role"].ToString();
+                    userData.EmailId = reader["EmailId"].ToString();
+                    userData.UserName = reader["UserName"].ToString();
+                    userData.Password = reader["Password"].ToString();
                 }
 
                 //Clossing Connection.
                 connection.Close();
 
-                if (status >= 1)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                //Returning User Data From Database.
+                return userData;
             }
             catch (Exception exception)
             {

@@ -46,7 +46,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool LoginUser(User user)
+        public User LoginUser(User user)
         {
             try
             {

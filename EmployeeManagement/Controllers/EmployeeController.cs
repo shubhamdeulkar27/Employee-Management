@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using BusinessLayer.Interface;
 using CommonLayer;
@@ -103,10 +104,10 @@ namespace EmployeeManagement.Controllers
                 //Set Response For Unauthorized.
                 IActionResult response = Unauthorized();
 
-                bool result = employeeManagementBL.LoginUser(data);
-                if (result == true)
+                User userData = employeeManagementBL.LoginUser(data);
+                if (userData !=null)
                 {
-                    var tokenString = GenerateJsonWebToken(data);
+                    var tokenString = GenerateJsonWebToken(userData);
                     return Ok(new { token = tokenString});
                 }
                 else
@@ -130,9 +131,17 @@ namespace EmployeeManagement.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, data.UserName),
+                new Claim(JwtRegisteredClaimNames.Email,data.EmailId),
+                new Claim(ClaimTypes.Role, data.Role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
             var token = new JwtSecurityToken(configuration["Jwt:Issuer"],
                             configuration["Jwt:Audiance"],
-                            null,
+                            claims,
                             expires: DateTime.Now.AddMinutes(120),
                             signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -144,6 +153,7 @@ namespace EmployeeManagement.Controllers
         /// <param name="employee"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public IActionResult RegisterEmployee([FromBody]Employee employee)
         {
             try
@@ -241,6 +251,7 @@ namespace EmployeeManagement.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize]
         public IActionResult GetEmployee([FromRoute]int Id)
         {
             try
@@ -301,6 +312,7 @@ namespace EmployeeManagement.Controllers
         /// <param name="employee"></param>
         /// <returns></returns>
         [HttpPut("{Id}")]
+        [Authorize(Roles ="Admin")]
         public IActionResult UpdateEmployee([FromRoute]int Id, [FromBody]Employee employee)
         {
             try
@@ -352,6 +364,7 @@ namespace EmployeeManagement.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete("{Id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteEmployee([FromRoute]int Id)
         {
             try
