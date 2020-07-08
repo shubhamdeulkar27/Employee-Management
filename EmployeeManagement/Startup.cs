@@ -63,6 +63,14 @@ namespace EmployeeManagement
                         Email = "shubhamdeulkar27@gmail.com"
                     }
                 });
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
             });
             services.AddCors(options =>
             {

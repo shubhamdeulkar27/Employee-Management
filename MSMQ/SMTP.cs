@@ -3,8 +3,17 @@ using MailKit.Net.Smtp;
 using MimeKit;
 namespace MSMQ
 {
+    /// <summary>
+    /// Class For Sending Email.
+    /// </summary>
     public class SMTP
     {
+        /// <summary>
+        /// Function For Sending Email.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="mail"></param>
+        /// <param name="data"></param>
         public void SendMail(string name, string mail, string data)
         {
             try

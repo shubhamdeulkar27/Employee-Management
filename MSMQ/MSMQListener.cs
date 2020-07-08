@@ -6,26 +6,42 @@ using Experimental.System.Messaging;
 
 namespace MSMQ
 {
-
+    /// <summary>
+    /// Delegate For Event Handler.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
     public delegate void MessageReceivedEventHandler(object sender, MessageEventArgs args);
 
+    /// <summary>
+    /// MSMQListener Helper Class.
+    /// </summary>
     public class MSMQListener
     {
-
+        //SMTP class object For Calling Send Email Function.
         SMTP smtpObject = new SMTP();
 
+        //Variable.
         private bool listen;
+        
+        //MessageQueue.
         MessageQueue messageQueue;
-
+        
+        //Event.
         public event MessageReceivedEventHandler MessageReceived;
 
-        
-
+        /// <summary>
+        /// Constructor For Setting Queue.
+        /// </summary>
+        /// <param name="queuePath"></param>
         public MSMQListener(string queuePath)
         {
             messageQueue = new MessageQueue(queuePath);
         }
 
+        /// <summary>
+        /// Function For Start Receiving Data From Queue.
+        /// </summary>
         public void Start()
         {
             listen = true;
@@ -35,6 +51,9 @@ namespace MSMQ
             StartListening();
         }
 
+        /// <summary>
+        /// Function For Stop Receving Data From MSMQ.
+        /// </summary>
         public void Stop()
         {
             listen = false;
@@ -42,6 +61,9 @@ namespace MSMQ
             messageQueue.ReceiveCompleted -= new ReceiveCompletedEventHandler(OnReceiveCompleted);
         }
 
+        /// <summary>
+        /// Function For Receving Data From MSMQ.
+        /// </summary>
         private void StartListening()
         {
             if (!listen)
@@ -59,6 +81,11 @@ namespace MSMQ
             }
         }
 
+        /// <summary>
+        /// Event Handler For Peek Completed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void OnPeekCompleted(object sender, PeekCompletedEventArgs args)
         {
             messageQueue.EndPeek(args.AsyncResult);
@@ -74,22 +101,31 @@ namespace MSMQ
                 StartListening();
                 FireRecieveEvent(message.Body);
             }
-            catch (Exception e)
+            catch 
             {
                 transaction.Abort();
             }
         }
 
+        /// <summary>
+        /// Function For Terminate Receive Event and Sending Email.
+        /// </summary>
+        /// <param name="body"></param>
         private void FireRecieveEvent(object body)
         {
             if (MessageReceived != null)
             {
                 MessageReceived(this, new MessageEventArgs(body));
                 string data = body.ToString();
-                smtpObject.SendMail("Shubham","shubhamdeulkar@gmail.com",data);
+                smtpObject.SendMail("Shubham","shubhamdeulkar27@gmail.com",data);
             }
         }
 
+        /// <summary>
+        /// Event Handler for Receive Completion.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void OnReceiveCompleted(object sender, ReceiveCompletedEventArgs args)
         {
             Message message = messageQueue.EndReceive(args.AsyncResult);
@@ -101,26 +137,16 @@ namespace MSMQ
 
     }
 
+    /// <summary>
+    /// Class For Event Arguments.
+    /// </summary>
     public class MessageEventArgs : EventArgs
     {
         private object messageBody;
 
-        private string name;
-        private string mail;
-
         public object MessageBody
         {
             get { return messageBody; }
-        }
-
-        public string Email 
-        {
-            get { return name; }
-        }
-
-        public string UserName
-        {
-            get { return name; }
         }
 
         public MessageEventArgs(object body)

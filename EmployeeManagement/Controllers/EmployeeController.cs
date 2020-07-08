@@ -11,7 +11,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Experimental.System.Messaging;
+
 
 namespace EmployeeManagement.Controllers
 {
@@ -74,8 +74,7 @@ namespace EmployeeManagement.Controllers
                                      " Your \n" + "Registration Succesful" +
                                      "\n UserName: "+Convert.ToString(data.UserName)+
                                      "\n Role: " + Convert.ToString(data.Role) +
-                                     "\n Email :" + Convert.ToString(data.EmailId) +
-                                     "\n Password: " + Convert.ToString(data.Password);
+                                     "\n Email :" + Convert.ToString(data.EmailId);
 
                     //Sending Message To MSMQ.
                     senderObject.Send(message);
@@ -124,11 +123,11 @@ namespace EmployeeManagement.Controllers
                 if (userData !=null)
                 {
                     var tokenString = GenerateJsonWebToken(userData);
-                    return Ok(new { token = tokenString});
+                    return Ok(new { Success = true, Meesage = "Login Successfull", Data = tokenString});
                 }
                 else
                 {
-                    return response;
+                    return Ok(new { Success = true, Meesage = response });
                 }
             }
             catch (Exception exception)
