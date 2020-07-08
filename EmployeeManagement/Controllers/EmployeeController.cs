@@ -11,6 +11,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Experimental.System.Messaging;
 
 namespace EmployeeManagement.Controllers
 {
@@ -26,6 +27,9 @@ namespace EmployeeManagement.Controllers
 
         //IDistributed Reference For Redis Cache.
         private readonly IDistributedCache distributedCache;
+
+        //Sendeer Class Object For MSMQ
+        Sender senderObject = new Sender();
 
         /// <summary>
         /// Parameter Constructor For Setting EmployeeManagementBL Object.
@@ -45,6 +49,7 @@ namespace EmployeeManagement.Controllers
         /// <returns></returns>
         // POST api/employee
         [HttpPost("registeruser")]
+        [Authorize(Roles = "Admin")]
         public IActionResult RegisterUser([FromBody]User data)
         {
             try
@@ -64,6 +69,17 @@ namespace EmployeeManagement.Controllers
                 bool result = employeeManagementBL.RegisterUser(data);
                 if (result == true)
                 {
+                    //Message For MSMQ.
+                    string message = " Hello " + Convert.ToString(data.UserName) + 
+                                     " Your \n" + "Registration Succesful" +
+                                     "\n UserName: "+Convert.ToString(data.UserName)+
+                                     "\n Role: " + Convert.ToString(data.Role) +
+                                     "\n Email :" + Convert.ToString(data.EmailId) +
+                                     "\n Password: " + Convert.ToString(data.Password);
+
+                    //Sending Message To MSMQ.
+                    senderObject.Send(message);
+
                     return Ok(new { Success = "True", Message = "User Registration Successful", Data = data });
                 }
                 else

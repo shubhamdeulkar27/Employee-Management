@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagement", "EmployeeManagement.csproj", "{896B9AFD-25FF-4F31-990D-1851AB09BD4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeManagement", "EmployeeManagement.csproj", "{896B9AFD-25FF-4F31-990D-1851AB09BD4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "..\BusinessLayer\BusinessLayer.csproj", "{C92028C0-10DB-400E-896F-328C3C5B4CB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLayer", "..\BusinessLayer\BusinessLayer.csproj", "{C92028C0-10DB-400E-896F-328C3C5B4CB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLayer", "..\CommonLayer\CommonLayer.csproj", "{55F8CA5E-524E-443D-BBFD-22303E5277AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonLayer", "..\CommonLayer\CommonLayer.csproj", "{55F8CA5E-524E-443D-BBFD-22303E5277AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryLayer", "..\RepositoryLayer\RepositoryLayer.csproj", "{30B95BD3-5D46-4941-BA94-5ACB4D9108EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLayer", "..\RepositoryLayer\RepositoryLayer.csproj", "{30B95BD3-5D46-4941-BA94-5ACB4D9108EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeManagementTests", "..\EmployeeManagementTests\EmployeeManagementTests.csproj", "{B93EB341-8B71-407B-9D2E-7E4F72335143}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeManagementTests", "..\EmployeeManagementTests\EmployeeManagementTests.csproj", "{B93EB341-8B71-407B-9D2E-7E4F72335143}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSMQ", "..\MSMQ\MSMQ.csproj", "{0A5405A7-860E-4327-AEE9-ADDF65C58F24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{B93EB341-8B71-407B-9D2E-7E4F72335143}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B93EB341-8B71-407B-9D2E-7E4F72335143}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B93EB341-8B71-407B-9D2E-7E4F72335143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
