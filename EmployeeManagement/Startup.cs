@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Xml;
+using Microsoft.OpenApi.Models;
+using MimeKit;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using Swashbuckle.AspNetCore.Swagger;
@@ -48,28 +51,41 @@ namespace EmployeeManagement
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = "localhost:6379";
+                options.InstanceName = "Employees";
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "Employee Management System",
-                    Description = "Asp.NET Core API",
-                    TermsOfService = "None",
-                    Contact = new Contact()
+                c.SwaggerDoc("v1", 
+                    new OpenApiInfo
                     {
-                        Name = "Shubham Deulkar",
-                        Email = "shubhamdeulkar27@gmail.com"
-                    }
-                });
+                        Title = "Employee Management",
+                        Description = "Asp.NET Core API",
+                        Version = "v1",
+                    });
 
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                }) ;
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
                 });
             });
             services.AddCors(options =>
@@ -95,11 +111,14 @@ namespace EmployeeManagement
             }
 
             app.UseCors("CorsPolicy");
+            
             app.UseHttpsRedirection();
             app.UseMvc();
+ 
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quantity Measurement API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee Management API V1");
+                c.RoutePrefix = "swagger";
             });
         }
     }

@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryLayer", "..\Repos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeManagementTests", "..\EmployeeManagementTests\EmployeeManagementTests.csproj", "{B93EB341-8B71-407B-9D2E-7E4F72335143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSMQ", "..\MSMQ\MSMQ.csproj", "{0A5405A7-860E-4327-AEE9-ADDF65C58F24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSMQ", "..\MSMQ\MSMQ.csproj", "{0A5405A7-860E-4327-AEE9-ADDF65C58F24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestProject", "..\NUnitTestProject\NUnitTestProject.csproj", "{9B63C8D7-318B-4951-8E37-B900855DD7DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A5405A7-860E-4327-AEE9-ADDF65C58F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

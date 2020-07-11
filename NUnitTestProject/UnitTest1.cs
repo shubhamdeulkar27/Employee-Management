@@ -1,0 +1,486 @@
+using BusinessLayer.Interface;
+using BusinessLayer.Services;
+using CommonLayer;
+using EmployeeManagement.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Redis;
+using Microsoft.Extensions.Configuration;
+using NSubstitute;
+using NUnit.Framework;
+using RepositoryLayer.Interface;
+using RepositoryLayer.Services;
+
+namespace NUnitTestProject
+{
+    public class Tests
+    {
+        //Controller Reference.
+        EmployeeController controller;
+
+        //References BL and RL.
+        private readonly IEmployeeManagementRL employeeManagementRL;
+        private readonly IEmployeeManagementBL employeeManagementBL;
+
+        //Reference Of Configuration.
+        private readonly IConfiguration configuration;
+        private readonly IDistributedCache distributedCache;
+
+        //Model Instances.
+        User user = new User();
+        Employee employee = new Employee();
+
+        //Variable.
+        int ValidId = 2035;
+
+        /// <summary>
+        /// Constructor For Setting Required References.
+        /// </summary>
+        public Tests()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json");
+            this.configuration = configurationBuilder.Build();
+            employeeManagementRL = new EmployeeManagementRL(configuration);
+            employeeManagementBL = new EmployeeManagementBL(employeeManagementRL);
+            distributedCache = new RedisCache(new RedisCacheOptions
+            {
+                Configuration = "localhost:6379",
+                InstanceName = "Employees"
+            });
+            controller = new EmployeeController(employeeManagementBL, distributedCache, configuration);
+            
+        }
+
+        /// <summary>
+        /// Test Case For User Register API.
+        /// Empty String Value Should Return Bad Request.
+        /// </summary>
+        [Test]
+        public void EmptyStringFieldsShouldReturnBadRequest()
+        {
+            //Setting Data.
+            user.Role = "";
+            user.EmailId = "";
+            user.UserName = "";
+            user.Password = "";
+            var response = controller.RegisterUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For User Register API.
+        /// Null Field Should Return Bad Request.
+        /// </summary>
+        [Test]
+        public void NullFieldsShouldReturnBadRequest()
+        {
+            //Setting Data Fields.
+            user.Role = null;
+            user.EmailId = null;
+            user.UserName = null;
+            user.Password= null;
+            var response = controller.RegisterUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For User Register API.
+        /// If User Detail Already Exists Then Return Conflict 409. 
+        /// </summary>
+        [Test]
+        public void IfDetailsExistsShouldReturnConflict()
+        {
+            //Setting Data Fields.
+            user.Role = "Admin";
+            user.EmailId = "app.admin@gmail.com";
+            user.UserName = "admin@27";
+            user.Password = "Admin@27";
+            var response = controller.RegisterUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<ConflictObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For User Register API.
+        /// If Valid Data is Provided Then It Will Return OOk Object Result.
+        /// </summary>
+        [Test]
+        public void ValidDataShouldReturnOk()
+        {
+            //Setting Data Fields.
+            user.Role = "Tester";
+            user.EmailId = "app.tester@gmail.com";
+            user.UserName = "tester@27";
+            user.Password = "Tester@27";
+            var response = controller.RegisterUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For User Login API.
+        /// Fields are set as empty string should return Bad Request.
+        /// </summary>
+        [Test]
+        public void EmptyCredentialsShouldReturnBadRequest() 
+        {
+            //Setting Data Fields.
+            user.UserName = "";
+            user.Password = "";
+            var response = controller.LoginUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For User Login API.
+        /// Fields are set as null should return Bad Request.
+        /// </summary>
+        [Test]
+        public void NullCredentialsShouldReturnBadRequest()
+        {
+            //Setting Data Fields.
+            user.UserName = null;
+            user.Password = null;
+            var response = controller.LoginUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For User Login API.
+        /// Invalid Credentials Should Return NotFound.
+        /// </summary>
+        [Test]
+        public void InvalidCredentialsShouldReturnNotFound()
+        {
+            //Setting Data Fields.
+            user.UserName = "chris@20";
+            user.Password = "Chris@20";
+            var response = controller.LoginUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For User Login API.
+        /// Valid Credentials Should Return Ok.
+        /// </summary>
+        [Test]
+        public void GivenValidCredentialsShouldReturnOk()
+        {
+            //Setting Data Fields.
+            user.UserName = "admin@27";
+            user.Password = "Admin@27";
+            var response = controller.LoginUser(user);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Get Employees API.
+        /// </summary>
+        [Test]
+        public void TestForGetEmployees()
+        {
+            //Calling Get Employees.
+            var response = controller.GetEmployees();
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Register Employee API Test Cases.
+        /// Empty String Fields Should Return Bad Request.
+        /// </summary>
+        [Test]
+        public void EmptyStringFieldsShoudReturnBadRequests()
+        {
+            //Setting Values.
+            employee.FirstName = "";
+            employee.LastName = "";
+            employee.EmailId = "";
+            employee.Mobile = "";
+            employee.Address = "";
+            employee.Employment = "";
+            var response = controller.RegisterEmployee(employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Register Employee API Test Cases.
+        /// Null Fields Should Return Bad Request.
+        /// </summary>
+        [Test]
+        public void NullFieldsShoudReturnBadRequests()
+        {
+            //Setting Values.
+            employee.FirstName = null;
+            employee.LastName = null;
+            employee.EmailId = null;
+            employee.Mobile = null;
+            employee.Address = null;
+            employee.Employment = null;
+            var response = controller.RegisterEmployee(employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Register Employee API Test Cases.
+        /// If Employee Exists Should Return Conflict.
+        /// </summary>
+        [Test]
+        public void IfEmployeeExistsShouldReturnConflict()
+        {
+            //Setting Values.
+            employee.FirstName = "Shubham";
+            employee.LastName = "Deulkar";
+            employee.EmailId = "shubhamdeulkar27@gmail.com";
+            employee.Mobile = "9011907526";
+            employee.Address = "Vashigao, NaviMumbai, Maharashtra.";
+            employee.BirthDate = "27/12/1995";
+            employee.Employment = "Full-Time";
+            var response = controller.RegisterEmployee(employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<ConflictObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Register Employee API Test Cases.
+        /// Valid Employee Details Should Return Ok.
+        /// </summary>
+        [Test]
+        public void ValidEmployeeDetailsShouldReturnOk()
+        {
+            //Setting Values.
+            employee.FirstName = "Suraj";
+            employee.LastName = "Thorat";
+            employee.EmailId = "suraj.thorat@gmail.com";
+            employee.Mobile = "7811797526";
+            employee.Address = "NaviMumbai, Maharashtra.";
+            employee.BirthDate = "12/02/1985";
+            employee.Employment = "Full-Time";
+            var response = controller.RegisterEmployee(employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Get Employee By Id.
+        /// If Id Is Invalid Should Return Bad Request.
+        /// </summary>
+        [Test]
+        public void IfIdIsInvalidShouldReturnBadRequest()
+        {
+            //Setting Values.
+            int Id = -1;
+            var response = controller.GetEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Get Employee By Id.
+        /// If Id does not exists then Return Not Found.
+        /// </summary>
+        [Test]
+        public void IfIdNotExistsShouldReturnNotFound()
+        {
+            //Setting Values.
+            int Id = 208;
+            var response = controller.GetEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Get Employee By Id.
+        /// If Id Matches then Return Ok.
+        /// </summary>
+        [Test]
+        public void IfIdMatchesShouldReturnOk()
+        {
+            //Setting Values.
+            int Id = 1;
+            var response = controller.GetEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Update Employee API.
+        /// If Id Is Invalid Should Return BadRequest.
+        /// </summary>
+        [Test]
+        public void GivenInvalidIdShouldReturnBadRequest()
+        {
+            //Setting Data.
+            int Id = -25;
+            employee.FirstName = "Suraj";
+            employee.LastName = "Thorat";
+            employee.EmailId = "suraj.thorat@gmail.com";
+            employee.Mobile = "7811797526";
+            employee.Address = "NaviMumbai, Maharashtra.";
+            employee.BirthDate = "12/02/1985";
+            employee.Employment = "Full-Time";
+            var response = controller.UpdateEmployee(Id, employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Update Employee API.
+        /// If Id does not exists Should Return Not Found.
+        /// </summary>
+        [Test]
+        public void IdDoesNotExistsShouldReturnNotFound()
+        {
+            //Setting Data.
+            int Id = 208;
+            employee.FirstName = "Suraj";
+            employee.LastName = "Thorat";
+            employee.EmailId = "suraj.thorat@gmail.com";
+            employee.Mobile = "7811797526";
+            employee.Address = "NaviMumbai, Maharashtra.";
+            employee.BirthDate = "12/02/1985";
+            employee.Employment = "Full-Time";
+            var response = controller.UpdateEmployee(Id, employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Update Employee API.
+        /// If Employee Detail Fields Are Empty Strings Should Return BadRequest.
+        /// </summary>
+        [Test]
+        public void IfFieldsAreEmptyStringShouldReturnBadRequest()
+        {
+            //Setting Data.
+            int Id = ValidId;
+            employee.FirstName = "";
+            employee.LastName = "";
+            employee.EmailId = "";
+            employee.Mobile = "";
+            employee.Address = "";
+            employee.BirthDate = "";
+            employee.Employment = "";
+            var response = controller.UpdateEmployee(Id, employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Update Employee API.
+        /// If Employee Detail Fields Null Should Return BadRequest.
+        /// </summary>
+        [Test]
+        public void IfFieldsAreNullShouldReturnBadRequest()
+        {
+            //Setting Data.
+            int Id = ValidId;
+            employee.FirstName = null;
+            employee.LastName = null;
+            employee.EmailId = null;
+            employee.Mobile = null;
+            employee.Address = null;
+            employee.BirthDate = null;
+            employee.Employment = null;
+            var response = controller.UpdateEmployee(Id, employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Case For Update Employee API.
+        ///  Valid Id and Data Should Return Ok.
+        /// </summary>
+        [Test]
+        public void ValidIdandDataShouldReturnOk()
+        {
+            //Setting Data.
+            int Id = ValidId;
+            employee.FirstName = "Suraj";
+            employee.LastName = "Thorat";
+            employee.EmailId = "suraj.thorat@gmail.com";
+            employee.Mobile = "7811797526";
+            employee.Address = "NaviMumbai, Maharashtra.";
+            employee.BirthDate = "12/02/1985";
+            employee.Employment = "Full-Time";
+            var response = controller.UpdateEmployee(Id, employee);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For Delete API.
+        /// If Id Is Not Valid SHould Return Bad Request.
+        /// </summary>
+        [Test]
+        public void IfEmployeeIdIsInvalidShouldReturnBadRequest()
+        {
+            //Setting Data.
+            int Id = -8;
+            var response = controller.DeleteEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For Delete API.
+        /// If Id Does Not Exists Should Return Not Found.
+        /// </summary>
+        [Test]
+        public void IfIdDoesNotExistsShouldReturnNotFound()
+        {
+            //Setting Data.
+            int Id = 208;
+            var response = controller.DeleteEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<NotFoundObjectResult>(response);
+        }
+
+        /// <summary>
+        /// Test Cases For Delete API.
+        /// Given Valid Id Should Return Ok.
+        /// </summary>
+        [Test]
+        public void GivenValidIdShouldReturnOk()
+        {
+            //Setting Data.
+            int Id = ValidId;
+            var response = controller.DeleteEmployee(Id);
+
+            //Asserting Values.
+            Assert.IsInstanceOf<OkObjectResult>(response);
+        }
+    }
+}

@@ -14,7 +14,7 @@ namespace MSMQ
         /// </summary>
         public static void Main()
         {
-            var listener = new MSMQListener(@".\Private$\messageq");
+            MSMQListener listener = new MSMQListener(@".\Private$\messageq");
             listener.MessageReceived += new MessageReceivedEventHandler(listnerMessageReceived);
             listener.Start();
             Console.WriteLine("Read Message");

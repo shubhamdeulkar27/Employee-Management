@@ -2,6 +2,9 @@ using BusinessLayer.Interface;
 using BusinessLayer.Services;
 using CommonLayer;
 using EmployeeManagement.Controllers;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using System;
 using Xunit;
@@ -13,22 +16,25 @@ namespace EmployeeManagementTests
     /// </summary>
     public class EmployeeManagementTests
     {
-        /// <summary>
-        /// Test Case 1.0 Given UserName, Password and UserName,Password Should Return Equal.
-        /// </summary>
-        [Fact]
-        public void GivenUserNamePasswordAndUserNamePasswordShouldReturnEqual()
-        {
-            //Creating User Instances.
-            User userOne = new User();
-            userOne.UserName = "Chrisy";
-            userOne.Password = "1234567";
-            User userTwo = new User();
-            userTwo.UserName = "Chrisy";
-            userTwo.Password = "1234567";
+        //Reference Of Controller.
+        EmployeeController controller;
 
-            //Asserting Values.
-            Assert.Equal(userOne,userTwo);
+        //Reference Of Interfaces Of Business And Repository Layer.
+        private readonly IEmployeeManagementBL employeeManagementBL;
+        private readonly IEmployeeManagementRL employeeManagementRL;
+
+        //Reference Of Configuration.
+        private readonly IConfiguration configuration;
+        private readonly IDistributedCache distributedCache;
+
+        /// <summary>
+        /// Construtor For Setting RL, BL and IDistributedCache References.
+        /// </summary>
+        public EmployeeManagementTests()
+        {
+            employeeManagementRL = new EmployeeManagementRL(configuration);
+            employeeManagementBL = new EmployeeManagementBL(employeeManagementRL);
+            controller = new EmployeeController(employeeManagementBL, distributedCache, configuration);
         }
 
         /// <summary>
@@ -86,35 +92,7 @@ namespace EmployeeManagementTests
             Assert.Equal(encryptedSting1,encryptedSting2);
         }
 
-        /// <summary>
-        /// Test Case 1.4 Given Employee Details Should Return Equal.
-        /// </summary>
-        [Fact]
-        public void GivenEmployeeDetailsShouldRetrunEqual()
-        {
-            //Creatingg Employee Instances.
-            Employee employeeOne = new Employee();
-            employeeOne.FirstName = "Abhi";
-            employeeOne.LastName = "Fuke";
-            employeeOne.EmailId = "abhi.fuke@gmail.com";
-            employeeOne.Mobile = "1234567890";
-            employeeOne.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-            employeeOne.BirthDate = "17/5/1996";
-            employeeOne.Employment = "Full-Time";
-
-            Employee employeeTwo = new Employee();
-            employeeTwo.FirstName = "Abhi";
-            employeeTwo.LastName = "Fuke";
-            employeeTwo.EmailId = "abhi.fuke@gmail.com";
-            employeeTwo.Mobile = "1234567890";
-            employeeTwo.Address = "Govind Apartment, Karve Nagar, Pune, Pin 000000";
-            employeeTwo.BirthDate = "17/5/1996";
-            employeeTwo.Employment = "Full-Time";
-
-            //Asserting Values.
-            Assert.Equal(employeeOne,employeeTwo);
-        }
-
+        
         /// <summary>
         /// Test Case 1.5 Given Invalid FirstName Should Throw Validation Exception.
         /// </summary>
@@ -268,6 +246,21 @@ namespace EmployeeManagementTests
                 //Asserting Values.
                 Assert.Equal(expected, exception.Message);
             }
+        }
+
+        /// <summary>
+        /// Test Case For Register API, will Return Bad Request For Invalid Data.
+        /// </summary>
+        [Fact]
+        public void GivenInvalidDetailShouldReturnBadRequest()
+        {
+            User user = new User();
+            user.Role = "";
+            user.EmailId = "";
+            user.UserName = "";
+            user.Password = "";
+
+            var response = controller.RegisterUser(user);
         }
     }
 }

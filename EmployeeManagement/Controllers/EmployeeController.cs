@@ -83,7 +83,7 @@ namespace EmployeeManagement.Controllers
                 }
                 else
                 {
-                    return Ok(new { Success = "True", Message = "User Already Exists", Data = data });
+                    return Conflict(new { Success = "False", Message = "User Already Exists", Data = data });
                 }
                 
             }
@@ -120,14 +120,14 @@ namespace EmployeeManagement.Controllers
                 IActionResult response = Unauthorized();
 
                 User userData = employeeManagementBL.LoginUser(data);
-                if (userData !=null)
+                if (userData.Role !=null && userData.EmailId !=null)
                 {
                     var tokenString = GenerateJsonWebToken(userData);
-                    return Ok(new { Success = true, Meesage = "Login Successfull", Data = tokenString});
+                    return Ok(new { Success = true, Meesage = "Login Successfull", Data = data.UserName , Token = tokenString});
                 }
                 else
                 {
-                    return Ok(new { Success = true, Meesage = response });
+                    return this.NotFound(new { Success = false, Meesage = response });
                 }
             }
             catch (Exception exception)
@@ -192,12 +192,15 @@ namespace EmployeeManagement.Controllers
                 if (result == true)
                 {
                     //If new Employee Details are Added then cache will be cleared.
-                    distributedCache.Remove(cacheKey);
+                    if(distributedCache.Get(cacheKey)!=null)
+                    {
+                        distributedCache.Remove(cacheKey);
+                    }
                     return Ok(new { Success = "True", Message = "Employee Registration Successful", Data = employee });
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "Employee Registration Failed", Data = employee });
+                    return Conflict(new { Success = "False", Message = "Employee Registration Failed", Data = employee });
                 }
             }
             catch (Exception exception)
@@ -251,7 +254,7 @@ namespace EmployeeManagement.Controllers
                 }
                 else
                 {
-                    return Ok(new { Success = "True", Message = "Employee Details Not Exists", Data = employees });
+                    return NotFound(new { Success = "False", Message = "Employee Details Not Exists", Data = employees });
                 }
             }
             catch (Exception exception)
@@ -278,40 +281,16 @@ namespace EmployeeManagement.Controllers
                 }
 
                 //Employee Reference For Storing Employee Details.
-                Employee employee;
-                
-                //Variables For Redis Cache.
-                string cacheKey = Id.ToString();
-                string serializedEmployee;
-
-                //Getting Employee Details From Redis Cache.
-                var encodedEmployee = distributedCache.Get(cacheKey);
-
-                //If Redis has employee detail then it will fetch from Redis else it will fetch from Database.
-                if(encodedEmployee!=null)
-                {
-                    serializedEmployee = Encoding.UTF8.GetString(encodedEmployee);
-                    employee = JsonConvert.DeserializeObject<Employee>(serializedEmployee);
-                }
-                else
-                {
-                    employee = employeeManagementBL.GetEmployee(Id);
-                    serializedEmployee = JsonConvert.SerializeObject(employee);
-                    encodedEmployee = Encoding.UTF8.GetBytes(serializedEmployee);
-                    var options = new DistributedCacheEntryOptions()
-                                     .SetSlidingExpiration(TimeSpan.FromMinutes(20))
-                                     .SetAbsoluteExpiration(DateTime.Now.AddHours(6));
-                    distributedCache.Set(cacheKey, encodedEmployee, options);
-                }
+                Employee employee = employeeManagementBL.GetEmployee(Id);
 
                 //Sending Response Depending Employee Details.
-                if (employee != null)
+                if (employee.EmailId != null)
                 {
                     return Ok(new { Success = "True", Message = "Employee Detail Fetched Successfully", Data = employee });
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "Employee Detail Fetching Failed", Data = employee });
+                    return NotFound(new { Success = "False", Message = "Employee Detail Fetching Failed", Data = employee });
                 }
             }
             catch (Exception exception)
@@ -334,7 +313,6 @@ namespace EmployeeManagement.Controllers
             {
                 //Keys for Redis Cache.
                 string cacheKeyForEmployees = "employees";
-                string cacheKeyForEmployee = Id.ToString();
 
                 //If Id is invalid then throw custom exception and return BadRequest.
                 if (Id<0)
@@ -359,12 +337,11 @@ namespace EmployeeManagement.Controllers
                 {
                     //Clearing Redis Cache.
                     distributedCache.Remove(cacheKeyForEmployees);
-                    distributedCache.Remove(cacheKeyForEmployee);
                     return Ok(new { Success = "True", Message = "Employee Details Updated Successfuly", Data = employee });
                 }
                 else
                 {
-                    return Ok(new { Success = "True", Message = "Employee Details Updation Failed", Data = employee });
+                    return NotFound(new { Success = "False", Message = "Employee Details Updation Failed", Data = employee });
                 }
             }
             catch (Exception exception)
@@ -386,7 +363,6 @@ namespace EmployeeManagement.Controllers
             {
                 //Keys for Redis Cache.
                 string cacheKeyForEmployees = "employees";
-                string cacheKeyForEmployee = Id.ToString();
 
                 //If Id is invalid then throw custom exception and return BadRequest.
                 if (Id < 0)
@@ -399,12 +375,11 @@ namespace EmployeeManagement.Controllers
                 {
                     //Clearing Redis Cache.
                     distributedCache.Remove(cacheKeyForEmployees);
-                    distributedCache.Remove(cacheKeyForEmployee);
                     return Ok(new { Success = "True", Message = "Employee Deleted Successfuly", Data = Id });
                 }
                 else
                 {
-                    return Ok(new { Success = "False", Message = "Employee Deletion Failed", Data = Id });
+                    return NotFound(new { Success = "False", Message = "Employee Deletion Failed", Data = Id });
                 }
             }
             catch (Exception exception)
