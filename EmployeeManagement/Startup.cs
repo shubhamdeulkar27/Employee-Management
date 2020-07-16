@@ -51,7 +51,6 @@ namespace EmployeeManagement
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = "localhost:6379";
-                options.InstanceName = "Employees";
             });
             services.AddSwaggerGen(c =>
             {

@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
+using System;
 
 namespace NUnitTestProject
 {
@@ -45,8 +48,7 @@ namespace NUnitTestProject
             employeeManagementBL = new EmployeeManagementBL(employeeManagementRL);
             distributedCache = new RedisCache(new RedisCacheOptions
             {
-                Configuration = "localhost:6379",
-                InstanceName = "Employees"
+                Configuration = "localhost:6379"
             });
             controller = new EmployeeController(employeeManagementBL, distributedCache, configuration);
             
@@ -64,10 +66,19 @@ namespace NUnitTestProject
             user.EmailId = "";
             user.UserName = "";
             user.Password = "";
-            var response = controller.RegisterUser(user);
+            var response = controller.RegisterUser(user) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["message"].ToString();
+
+            //Expected Response.
+            bool Success = false;
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -82,10 +93,14 @@ namespace NUnitTestProject
             user.EmailId = null;
             user.UserName = null;
             user.Password= null;
-            var response = controller.RegisterUser(user);
+            var response = controller.RegisterUser(user) as BadRequestObjectResult;
+
+            //Expected Response.
+            string Data = "{ Success = False, message = NULL_FIELD_EXCEPTION }";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Data, response.Value.ToString());
         }
 
         /// <summary>
@@ -100,10 +115,14 @@ namespace NUnitTestProject
             user.EmailId = "app.admin@gmail.com";
             user.UserName = "admin@27";
             user.Password = "Admin@27";
-            var response = controller.RegisterUser(user);
+            var response = controller.RegisterUser(user) as ConflictObjectResult;
+
+            //Expected Response.
+            string Data = "{ Success = False, Message = User Already Exists, Data = " +user+" }";
 
             //Asserting Values.
             Assert.IsInstanceOf<ConflictObjectResult>(response);
+            Assert.AreEqual(Data, response.Value.ToString());
         }
 
         /// <summary>
@@ -118,10 +137,14 @@ namespace NUnitTestProject
             user.EmailId = "app.tester@gmail.com";
             user.UserName = "tester@27";
             user.Password = "Tester@27";
-            var response = controller.RegisterUser(user);
+            var response = controller.RegisterUser(user) as OkObjectResult;
+
+            //Expected Response.
+            string Data = "{ Success = True, Message = User Registration Successful, Data = "+user+" }";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.AreEqual(Data, response.Value.ToString());
         }
 
         /// <summary>
@@ -134,10 +157,19 @@ namespace NUnitTestProject
             //Setting Data Fields.
             user.UserName = "";
             user.Password = "";
-            var response = controller.LoginUser(user);
-
+            var response = controller.LoginUser(user) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            
+            //Expeted Response.
+            bool Success = false;
+            string Message = "INVALID_FIELD_EXCEPTION";
+ 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -150,10 +182,14 @@ namespace NUnitTestProject
             //Setting Data Fields.
             user.UserName = null;
             user.Password = null;
-            var response = controller.LoginUser(user);
+            var response = controller.LoginUser(user) as BadRequestObjectResult;
+
+            //Expected Response.
+            string Data = "{ Success = False, Message = NULL_FIELD_EXCEPTION }";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Data, response.Value.ToString());
         }
 
         /// <summary>
