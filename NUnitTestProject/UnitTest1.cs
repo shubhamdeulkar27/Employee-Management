@@ -13,6 +13,7 @@ using NUnit.Framework;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using System;
+using System.Collections.Generic;
 
 namespace NUnitTestProject
 {
@@ -34,7 +35,7 @@ namespace NUnitTestProject
         Employee employee = new Employee();
 
         //Variable.
-        int ValidId = 2035;
+        int ValidId = 3025;
 
         /// <summary>
         /// Constructor For Setting Required References.
@@ -92,15 +93,20 @@ namespace NUnitTestProject
             user.Role = null;
             user.EmailId = null;
             user.UserName = null;
-            user.Password= null;
+            user.Password = null;
             var response = controller.RegisterUser(user) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["message"].ToString();
 
             //Expected Response.
-            string Data = "{ Success = False, message = NULL_FIELD_EXCEPTION }";
+            bool Success = false;
+            string message = "NULL_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
-            Assert.AreEqual(Data, response.Value.ToString());
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(message, dataResponseMessage);
         }
 
         /// <summary>
@@ -116,13 +122,20 @@ namespace NUnitTestProject
             user.UserName = "admin@27";
             user.Password = "Admin@27";
             var response = controller.RegisterUser(user) as ConflictObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToObject<User>();
 
             //Expected Response.
-            string Data = "{ Success = False, Message = User Already Exists, Data = " +user+" }";
+            bool Success = false;
+            string Message = "User Already Exists";
 
             //Asserting Values.
             Assert.IsInstanceOf<ConflictObjectResult>(response);
-            Assert.AreEqual(Data, response.Value.ToString());
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
+            Assert.IsInstanceOf<User>(dataResponseData);
         }
 
         /// <summary>
@@ -138,13 +151,22 @@ namespace NUnitTestProject
             user.UserName = "tester@27";
             user.Password = "Tester@27";
             var response = controller.RegisterUser(user) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToObject<User>();
+
 
             //Expected Response.
             string Data = "{ Success = True, Message = User Registration Successful, Data = "+user+" }";
+            bool Success = true;
+            string Message = "User Registration Successful";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
-            Assert.AreEqual(Data, response.Value.ToString());
+            Assert.AreEqual(Success,dataResponseSuccess);
+            Assert.AreEqual(Message,dataResponseMessage);
+            Assert.IsInstanceOf<User>(dataResponseData);
         }
 
         /// <summary>
@@ -183,13 +205,18 @@ namespace NUnitTestProject
             user.UserName = null;
             user.Password = null;
             var response = controller.LoginUser(user) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
 
             //Expected Response.
-            string Data = "{ Success = False, Message = NULL_FIELD_EXCEPTION }";
+            bool Success = false;
+            string Message = "NULL_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
-            Assert.AreEqual(Data, response.Value.ToString());
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -202,10 +229,19 @@ namespace NUnitTestProject
             //Setting Data Fields.
             user.UserName = "chris@20";
             user.Password = "Chris@20";
-            var response = controller.LoginUser(user);
+            var response = controller.LoginUser(user) as NotFoundObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"]["StatusCode"].ToString();
+
+            //Expected Values.
+            bool Success = false;
+            string Message = "401";
 
             //Asserting Values.
             Assert.IsInstanceOf<NotFoundObjectResult>(response);
+            Assert.AreEqual(Success,dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -218,10 +254,22 @@ namespace NUnitTestProject
             //Setting Data Fields.
             user.UserName = "admin@27";
             user.Password = "Admin@27";
-            var response = controller.LoginUser(user);
+            var response = controller.LoginUser(user) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToString();
+
+            //Expected Values.
+            bool Success = true;
+            string Message = "Login Successfull";
+            string Data = user.UserName.ToString();
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.AreEqual(Success,dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
+            Assert.AreEqual(Data,dataResponseData);
         }
 
         /// <summary>
@@ -231,10 +279,19 @@ namespace NUnitTestProject
         public void TestForGetEmployees()
         {
             //Calling Get Employees.
-            var response = controller.GetEmployees();
-
+            var response = controller.GetEmployees() as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            
+            //Expected Values.
+            bool Success = true;
+            string Message = "Employee List Fetched Successfully";
+            
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.AreEqual(Success,dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -251,10 +308,19 @@ namespace NUnitTestProject
             employee.Mobile = "";
             employee.Address = "";
             employee.Employment = "";
-            var response = controller.RegisterEmployee(employee);
+            var response = controller.RegisterEmployee(employee) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            bool Success = false;
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -271,10 +337,19 @@ namespace NUnitTestProject
             employee.Mobile = null;
             employee.Address = null;
             employee.Employment = null;
-            var response = controller.RegisterEmployee(employee);
+            var response = controller.RegisterEmployee(employee) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            bool Success = false;
+            string Message = "NULL_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -292,10 +367,19 @@ namespace NUnitTestProject
             employee.Address = "Vashigao, NaviMumbai, Maharashtra.";
             employee.BirthDate = "27/12/1995";
             employee.Employment = "Full-Time";
-            var response = controller.RegisterEmployee(employee);
+            var response = controller.RegisterEmployee(employee) as ConflictObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            bool Success = false;
+            string Message = "Employee Registration Failed";
 
             //Asserting Values.
             Assert.IsInstanceOf<ConflictObjectResult>(response);
+            Assert.AreEqual(Success,dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -313,10 +397,21 @@ namespace NUnitTestProject
             employee.Address = "NaviMumbai, Maharashtra.";
             employee.BirthDate = "12/02/1985";
             employee.Employment = "Full-Time";
-            var response = controller.RegisterEmployee(employee);
+            var response = controller.RegisterEmployee(employee) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToObject<Employee>();
+
+            //Expected Values.
+            bool Success = true;
+            string Message = "Employee Registration Successful";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
+            Assert.IsInstanceOf<Employee>(dataResponseData);
         }
 
         /// <summary>
@@ -328,10 +423,19 @@ namespace NUnitTestProject
         {
             //Setting Values.
             int Id = -1;
-            var response = controller.GetEmployee(Id);
+            var response = controller.GetEmployee(Id) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Value.
+            bool Success = false;
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -343,10 +447,19 @@ namespace NUnitTestProject
         {
             //Setting Values.
             int Id = 208;
-            var response = controller.GetEmployee(Id);
+            var response = controller.GetEmployee(Id) as NotFoundObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            bool Success = false;
+            string Message = "Employee Detail Fetching Failed";
 
             //Asserting Values.
             Assert.IsInstanceOf<NotFoundObjectResult>(response);
+            Assert.AreEqual(Success, dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -358,10 +471,20 @@ namespace NUnitTestProject
         {
             //Setting Values.
             int Id = 1;
-            var response = controller.GetEmployee(Id);
+            var response = controller.GetEmployee(Id) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToObject<Employee>();
+
+            //Expected Values.
+            string Message = "Employee Details Fetched Successfully";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.IsTrue(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
+            Assert.IsInstanceOf<Employee>(dataResponseData);
         }
 
         /// <summary>
@@ -380,10 +503,18 @@ namespace NUnitTestProject
             employee.Address = "NaviMumbai, Maharashtra.";
             employee.BirthDate = "12/02/1985";
             employee.Employment = "Full-Time";
-            var response = controller.UpdateEmployee(Id, employee);
+            var response = controller.UpdateEmployee(Id, employee) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsFalse(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -402,10 +533,18 @@ namespace NUnitTestProject
             employee.Address = "NaviMumbai, Maharashtra.";
             employee.BirthDate = "12/02/1985";
             employee.Employment = "Full-Time";
-            var response = controller.UpdateEmployee(Id, employee);
+            var response = controller.UpdateEmployee(Id, employee) as NotFoundObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "Employee Details Updation Failed";
 
             //Asserting Values.
             Assert.IsInstanceOf<NotFoundObjectResult>(response);
+            Assert.IsFalse(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -424,10 +563,18 @@ namespace NUnitTestProject
             employee.Address = "";
             employee.BirthDate = "";
             employee.Employment = "";
-            var response = controller.UpdateEmployee(Id, employee);
+            var response = controller.UpdateEmployee(Id, employee) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsFalse(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -446,10 +593,18 @@ namespace NUnitTestProject
             employee.Address = null;
             employee.BirthDate = null;
             employee.Employment = null;
-            var response = controller.UpdateEmployee(Id, employee);
+            var response = controller.UpdateEmployee(Id, employee) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "NULL_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsFalse(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -468,10 +623,20 @@ namespace NUnitTestProject
             employee.Address = "NaviMumbai, Maharashtra.";
             employee.BirthDate = "12/02/1985";
             employee.Employment = "Full-Time";
-            var response = controller.UpdateEmployee(Id, employee);
+            var response = controller.UpdateEmployee(Id, employee) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+            var dataResponseData = dataResponse["Data"].ToObject<Employee>();
+
+            //Expected Values.
+            string Message = "Employee Details Updated Successfuly";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.IsTrue(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
+            Assert.IsInstanceOf<Employee>(dataResponseData);
         }
 
         /// <summary>
@@ -483,10 +648,18 @@ namespace NUnitTestProject
         {
             //Setting Data.
             int Id = -8;
-            var response = controller.DeleteEmployee(Id);
+            var response = controller.DeleteEmployee(Id) as BadRequestObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "INVALID_FIELD_EXCEPTION";
 
             //Asserting Values.
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsFalse(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -498,10 +671,18 @@ namespace NUnitTestProject
         {
             //Setting Data.
             int Id = 208;
-            var response = controller.DeleteEmployee(Id);
+            var response = controller.DeleteEmployee(Id) as NotFoundObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResposneSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "Employee Deletion Failed";
 
             //Asserting Values.
             Assert.IsInstanceOf<NotFoundObjectResult>(response);
+            Assert.IsFalse(dataResposneSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
 
         /// <summary>
@@ -513,10 +694,18 @@ namespace NUnitTestProject
         {
             //Setting Data.
             int Id = ValidId;
-            var response = controller.DeleteEmployee(Id);
+            var response = controller.DeleteEmployee(Id) as OkObjectResult;
+            var dataResponse = JToken.Parse(JsonConvert.SerializeObject(response.Value));
+            var dataResponseSuccess = dataResponse["Success"].ToObject<bool>();
+            var dataResponseMessage = dataResponse["Message"].ToString();
+
+            //Expected Values.
+            string Message = "Employee Deleted Successfuly";
 
             //Asserting Values.
             Assert.IsInstanceOf<OkObjectResult>(response);
+            Assert.IsTrue(dataResponseSuccess);
+            Assert.AreEqual(Message, dataResponseMessage);
         }
     }
 }

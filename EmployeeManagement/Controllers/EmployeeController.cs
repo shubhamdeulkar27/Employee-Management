@@ -123,11 +123,11 @@ namespace EmployeeManagement.Controllers
                 if (userData.Role !=null && userData.EmailId !=null)
                 {
                     var tokenString = GenerateJsonWebToken(userData);
-                    return Ok(new { Success = true, Meesage = "Login Successfull", Data = data.UserName , Token = tokenString});
+                    return Ok(new { Success = true, Message = "Login Successfull", Data = data.UserName , Token = tokenString});
                 }
                 else
                 {
-                    return this.NotFound(new { Success = false, Meesage = response });
+                    return this.NotFound(new { Success = false, Message = response });
                 }
             }
             catch (Exception exception)
@@ -185,7 +185,7 @@ namespace EmployeeManagement.Controllers
                 //If fields are set null then throw custom exception and return BadRequest.
                 if (employee.FirstName == null || employee.LastName == null || employee.EmailId == "" || employee.Mobile == "" || employee.Address == "" || employee.Employment == "")
                 {
-                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION.ToString() });
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.NULL_FIELD_EXCEPTION.ToString() });
                 }
 
                 bool result = employeeManagementBL.RegisterEmployee(employee);
@@ -268,7 +268,7 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{Id}")]
         [Authorize]
         public IActionResult GetEmployee([FromRoute]int Id)
         {
@@ -286,16 +286,16 @@ namespace EmployeeManagement.Controllers
                 //Sending Response Depending Employee Details.
                 if (employee.EmailId != null)
                 {
-                    return Ok(new { Success = "True", Message = "Employee Detail Fetched Successfully", Data = employee });
+                    return Ok(new { Success = true, Message = "Employee Details Fetched Successfully", Data = employee });
                 }
                 else
                 {
-                    return NotFound(new { Success = "False", Message = "Employee Detail Fetching Failed", Data = employee });
+                    return NotFound(new { Success = false, Message = "Employee Detail Fetching Failed" });
                 }
             }
             catch (Exception exception)
             {
-                return BadRequest(new { Success="False" , message = exception.Message});
+                return BadRequest(new { Success= false , message = exception.Message});
             }
         }
 
@@ -315,7 +315,7 @@ namespace EmployeeManagement.Controllers
                 string cacheKeyForEmployees = "employees";
 
                 //If Id is invalid then throw custom exception and return BadRequest.
-                if (Id<0)
+                if (Id<=0)
                 {
                     return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION.ToString() });
                 }
@@ -327,9 +327,9 @@ namespace EmployeeManagement.Controllers
                 }
 
                 //If fields are set null then throw custom exception and return BadRequest.
-                if (employee.FirstName == null || employee.LastName == null || employee.EmailId == "" || employee.Mobile == "" || employee.Address == "" || employee.Employment == "")
+                if (employee.FirstName == null || employee.LastName == null || employee.EmailId == null || employee.Mobile == null || employee.Address == null || employee.Employment == null)
                 {
-                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION.ToString() });
+                    return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.NULL_FIELD_EXCEPTION.ToString() });
                 }
 
                 bool result = employeeManagementBL.UpdateEmployee(Id, employee);
@@ -337,16 +337,16 @@ namespace EmployeeManagement.Controllers
                 {
                     //Clearing Redis Cache.
                     distributedCache.Remove(cacheKeyForEmployees);
-                    return Ok(new { Success = "True", Message = "Employee Details Updated Successfuly", Data = employee });
+                    return Ok(new { Success = true, Message = "Employee Details Updated Successfuly", Data = employee });
                 }
                 else
                 {
-                    return NotFound(new { Success = "False", Message = "Employee Details Updation Failed", Data = employee });
+                    return NotFound(new { Success = false, Message = "Employee Details Updation Failed" });
                 }
             }
             catch (Exception exception)
             {
-                return BadRequest(new { Success = "False" , message = exception });
+                return BadRequest(new { Success = false , message = exception });
             }
         }
         
@@ -365,7 +365,7 @@ namespace EmployeeManagement.Controllers
                 string cacheKeyForEmployees = "employees";
 
                 //If Id is invalid then throw custom exception and return BadRequest.
-                if (Id < 0)
+                if (Id <= 0)
                 {
                     return BadRequest(new { Success = false, Message = CustomExceptions.ExceptionType.INVALID_FIELD_EXCEPTION.ToString() });
                 }
@@ -375,16 +375,16 @@ namespace EmployeeManagement.Controllers
                 {
                     //Clearing Redis Cache.
                     distributedCache.Remove(cacheKeyForEmployees);
-                    return Ok(new { Success = "True", Message = "Employee Deleted Successfuly", Data = Id });
+                    return Ok(new { Success = true, Message = "Employee Deleted Successfuly", Data = Id });
                 }
                 else
                 {
-                    return NotFound(new { Success = "False", Message = "Employee Deletion Failed", Data = Id });
+                    return NotFound(new { Success = false, Message = "Employee Deletion Failed", Data = Id });
                 }
             }
             catch (Exception exception)
             {
-                return BadRequest(new { Success="False" , message = exception.Message});
+                return BadRequest(new { Success=false , message = exception.Message});
             }
         }
     }
