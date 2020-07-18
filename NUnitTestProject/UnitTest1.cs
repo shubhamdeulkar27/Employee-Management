@@ -2,19 +2,20 @@ using BusinessLayer.Interface;
 using BusinessLayer.Services;
 using CommonLayer;
 using EmployeeManagement.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Configuration;
+using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NSubstitute;
 using NUnit.Framework;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
 using System;
 using System.Collections.Generic;
-
+using System.Security.Claims;
 namespace NUnitTestProject
 {
     public class Tests
@@ -35,16 +36,25 @@ namespace NUnitTestProject
         Employee employee = new Employee();
 
         //Variable.
-        int ValidId = 3028;
+        int ValidId = 3029;
 
         /// <summary>
         /// Constructor For Setting Required References.
         /// </summary>
         public Tests()
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json");
-            this.configuration = configurationBuilder.Build();
+            var myConfiguration = new Dictionary<string, string>
+            {
+                {"Jwt:Key", "ThisismySecretKey"},
+                {"Jwt:Issuer", "https://localhost:44315/"},
+                {"Jwt:Audiance", "https://localhost:44315/"},
+                {"Logging:LogLevel:Default","Warning" },
+                {"AllowedHosts","*" },
+                {"ConnectionStrings:ConnectionString","Server=localhost\\SQLEXPRESS;Database=EmployeeManagement;Trusted_Connection=True;" }
+            };
+            this.configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
             employeeManagementRL = new EmployeeManagementRL(configuration);
             employeeManagementBL = new EmployeeManagementBL(employeeManagementRL);
             distributedCache = new RedisCache(new RedisCacheOptions
