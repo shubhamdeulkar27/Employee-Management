@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSMQ", "..\MSMQ\MSMQ.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTestProject", "..\NUnitTestProject\NUnitTestProject.csproj", "{9B63C8D7-318B-4951-8E37-B900855DD7DF}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EmployeeDatabase", "..\EmployeeDatabase\EmployeeDatabase.sqlproj", "{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,12 @@ Global
 		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B63C8D7-318B-4951-8E37-B900855DD7DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CDFB71-0EB1-4A9B-AB50-1ADFCF771066}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
